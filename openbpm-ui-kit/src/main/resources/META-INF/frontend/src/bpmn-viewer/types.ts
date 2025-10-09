@@ -30,33 +30,6 @@ export interface RemoveMarkerCmd {
     marker: string;
 }
 
-export interface IncidentOverlayData {
-    elementId: string;
-    incidentCount: number;
-    tooltipMessage: string;
-}
-
-export interface DecisionInstanceLinkOverlayData {
-    activityId?: string;
-    decisionInstanceId?: string;
-    tooltipMessage?: string;
-}
-
-export interface ActivityStatisticsOverlayData {
-    elementId: string;
-    incidentCount?: string;
-    instanceCount: string;
-    incidentCountTooltipMessage?: string;
-    instanceCountTooltipMessage: string;
-}
-
-export interface OverlayPosition {
-    top?: number,
-    right?: number,
-    bottom?: number,
-    left?: number
-}
-
 export enum ViewerMode {
     ReadOnly = 'READ_ONLY',
     Interactive = 'INTERACTIVE'
@@ -66,17 +39,4 @@ export interface ActivityData {
     id: string;
     name?: string;
     type: string;
-}
-
-export interface OverlayData {
-    htmlContainer: HTMLDivElement
-}
-
-export enum OverlayType {
-    DOCUMENTATION = 'documentation',
-    DECISION_INSTANCE = 'decision-instance',
-    CALLED_PROCESS = 'called-process',
-    CALLED_PROCESS_INSTANCE = 'called-process-instance',
-    ACTIVITY_STATISTICS = 'activity-statistics',
-    INCIDENT_COUNT = 'incident-count'
 }

@@ -1,0 +1,94 @@
+/*
+ * Copyright (c) Haulmont 2025. All Rights Reserved.
+ * Use is subject to license terms.
+ */
+
+import {ElementLike} from "diagram-js/lib/model/Types";
+
+export enum OverlayType {
+    DOCUMENTATION = 'documentation',
+    DECISION_INSTANCE = 'decision-instance',
+    CALLED_PROCESS = 'called-process',
+    CALLED_PROCESS_INSTANCE = 'called-process-instance',
+    ACTIVITY_STATISTICS = 'activity-statistics',
+    INCIDENT_COUNT = 'incident-count',
+    SEND_MESSAGE = 'send-message',
+}
+
+export interface IncidentOverlayData {
+    elementId: string;
+    incidentCount: number;
+    tooltipMessage: string;
+}
+
+export interface DecisionInstanceLinkOverlayData {
+    activityId?: string;
+    decisionInstanceId?: string;
+    tooltipMessage?: string;
+}
+
+export interface DecisionInstanceLinkOverlayParams {
+    data: DecisionInstanceLinkOverlayData;
+    handleClick: (decisionInstanceId: string) => void;
+}
+
+export interface NewActivityStatisticsOverlayData {
+    elementId: string;
+    incidentCount?: string;
+    instanceCount: string;
+    incidentCountTooltipMessage?: string;
+    instanceCountTooltipMessage: string;
+}
+
+
+export interface OverlayPosition {
+    top?: number,
+    right?: number,
+    bottom?: number,
+    left?: number
+}
+
+export interface OverlayData {
+    htmlContainer: HTMLDivElement
+}
+
+export interface DocumentationOverlayData {
+    showDocumentationOverlay?: boolean;
+}
+
+export interface DocumentationOverlayParams {
+    data: DocumentationOverlayData;
+    handleClick: (element: ElementLike, documentationValue: string) => void;
+}
+
+export interface SendMessageOverlaysData {
+    tooltipMessage: string;
+    useStartEvents: boolean;
+    useActiveEvents: boolean;
+}
+
+export interface SendMessageOverlaysParams {
+    data: SendMessageOverlaysData;
+    handleClick: (details: JSON) => void;
+}
+
+export interface CalledInstancesOverlayData {
+    elementId: string;
+    processInstanceIds?: string[];
+    tooltipMessage: string;
+}
+
+export interface CalledInstancesOverlayParams {
+    data: CalledInstancesOverlayData;
+    handleClick: (details: JSON) => void;
+}
+
+export interface CalledProcessOverlaysData {
+    visible?: boolean;
+    tooltipMessage?: string;
+}
+export interface CalledProcessOverlaysParams {
+    data: CalledProcessOverlaysData;
+    handleClick: (element: any, callActivityData: JSON) => void;
+}
+
