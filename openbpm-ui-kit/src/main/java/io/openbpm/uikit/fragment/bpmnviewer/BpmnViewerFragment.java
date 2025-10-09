@@ -26,21 +26,8 @@ import io.jmix.flowui.view.View;
 import io.jmix.flowui.view.ViewComponent;
 import io.openbpm.uikit.component.bpmnviewer.BpmnViewer;
 import io.openbpm.uikit.component.bpmnviewer.ViewerMode;
-import io.openbpm.uikit.component.bpmnviewer.command.AddMarkerCmd;
-import io.openbpm.uikit.component.bpmnviewer.command.RemoveMarkerCmd;
-import io.openbpm.uikit.component.bpmnviewer.command.SetActivityStatisticsCmd;
-import io.openbpm.uikit.component.bpmnviewer.command.SetElementColorCmd;
-import io.openbpm.uikit.component.bpmnviewer.command.SetIncidentCountCmd;
-import io.openbpm.uikit.component.bpmnviewer.command.ShowCalledInstanceOverlayCmd;
-import io.openbpm.uikit.component.bpmnviewer.command.ShowCalledProcessOverlaysCmd;
-import io.openbpm.uikit.component.bpmnviewer.command.ShowDecisionInstanceLinkOverlayCmd;
-import io.openbpm.uikit.component.bpmnviewer.command.ShowDocumentationOverlayCmd;
-import io.openbpm.uikit.component.bpmnviewer.event.CalledProcessInstanceOverlayClickEvent;
-import io.openbpm.uikit.component.bpmnviewer.event.CalledProcessOverlayClickEvent;
-import io.openbpm.uikit.component.bpmnviewer.event.DecisionInstanceLinkOverlayClickedEvent;
-import io.openbpm.uikit.component.bpmnviewer.event.DocumentationOverlayClickedEvent;
-import io.openbpm.uikit.component.bpmnviewer.event.ElementClickEvent;
-import io.openbpm.uikit.component.bpmnviewer.event.XmlImportCompleteEvent;
+import io.openbpm.uikit.component.bpmnviewer.command.*;
+import io.openbpm.uikit.component.bpmnviewer.event.*;
 import io.openbpm.uikit.component.bpmnviewer.model.ActivityData;
 import io.openbpm.uikit.view.documentation.BpmnElementDocumentationView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -185,6 +172,12 @@ public class BpmnViewerFragment extends Fragment<Div> {
         }
     }
 
+    public void showSendMessageOverlays(ShowSendMessageOverlaysCmd cmd) {
+        if (bpmnViewer != null) {
+            this.bpmnViewer.showSendMessageOverlays(cmd);
+        }
+    }
+
     public void addImportCompleteListener(ComponentEventListener<XmlImportCompleteEvent> listener) {
         if (bpmnViewer != null) {
             bpmnViewer.addImportCompleteListener(listener);
@@ -218,6 +211,12 @@ public class BpmnViewerFragment extends Fragment<Div> {
     public void addCalledProcessOverlayClickListener(ComponentEventListener<CalledProcessOverlayClickEvent> listener) {
         if (bpmnViewer != null) {
             bpmnViewer.addCalledProcessOverlayClickListener(listener);
+        }
+    }
+
+    public void addSendMessageOverlayClickListener(ComponentEventListener<SendMessageOverlayClickEvent> listener) {
+        if (bpmnViewer != null) {
+            bpmnViewer.addSendMessagesOverlayClickListener(listener);
         }
     }
 

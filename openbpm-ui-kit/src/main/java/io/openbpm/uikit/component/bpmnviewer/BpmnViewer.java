@@ -21,26 +21,9 @@ import com.vaadin.flow.internal.JsonUtils;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.shared.Registration;
 import io.jmix.core.Messages;
-import io.openbpm.uikit.component.bpmnviewer.command.AddMarkerCmd;
-import io.openbpm.uikit.component.bpmnviewer.command.RemoveMarkerCmd;
-import io.openbpm.uikit.component.bpmnviewer.command.SetActivityStatisticsCmd;
-import io.openbpm.uikit.component.bpmnviewer.command.SetElementColorCmd;
-import io.openbpm.uikit.component.bpmnviewer.command.SetIncidentCountCmd;
-import io.openbpm.uikit.component.bpmnviewer.command.ShowCalledInstanceOverlayCmd;
-import io.openbpm.uikit.component.bpmnviewer.command.ShowCalledProcessOverlaysCmd;
-import io.openbpm.uikit.component.bpmnviewer.command.ShowDecisionInstanceLinkOverlayCmd;
-import io.openbpm.uikit.component.bpmnviewer.command.ShowDocumentationOverlayCmd;
-import io.openbpm.uikit.component.bpmnviewer.event.CalledProcessInstanceOverlayClickEvent;
-import io.openbpm.uikit.component.bpmnviewer.event.CalledProcessOverlayClickEvent;
-import io.openbpm.uikit.component.bpmnviewer.event.DecisionInstanceLinkOverlayClickedEvent;
-import io.openbpm.uikit.component.bpmnviewer.event.DocumentationOverlayClickedEvent;
-import io.openbpm.uikit.component.bpmnviewer.event.ElementClickEvent;
-import io.openbpm.uikit.component.bpmnviewer.event.XmlImportCompleteEvent;
-import io.openbpm.uikit.component.bpmnviewer.model.ActivityData;
-import io.openbpm.uikit.component.bpmnviewer.model.ActivityStatisticsOverlayData;
-import io.openbpm.uikit.component.bpmnviewer.model.CalledInstancesOverlayData;
-import io.openbpm.uikit.component.bpmnviewer.model.CalledProcessOverlayData;
-import io.openbpm.uikit.component.bpmnviewer.model.IncidentOverlayData;
+import io.openbpm.uikit.component.bpmnviewer.command.*;
+import io.openbpm.uikit.component.bpmnviewer.event.*;
+import io.openbpm.uikit.component.bpmnviewer.model.*;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -149,7 +132,7 @@ public class BpmnViewer extends Component implements HasElement, ApplicationCont
     }
 
     /**
-     * Resets a zoom for the viewer.
+     * Resets zoom for the viewer.
      */
     public void resetZoom() {
         getElement().callJsFunction("resetZoom");
@@ -198,6 +181,19 @@ public class BpmnViewer extends Component implements HasElement, ApplicationCont
     public void setMode(ViewerMode mode) {
         this.mode = mode;
         getElement().callJsFunction("setMode", mode != null ? mode.name() : null);
+    }
+
+    /**
+     * Shows the "send message" overlays for the events on the BPMN diagram depending on the specified data.
+     *
+     * @param cmd command data
+     */
+    public void showSendMessageOverlays(ShowSendMessageOverlaysCmd cmd) {
+        SendMessageOverlaysData data = new SendMessageOverlaysData();
+        data.setUseActiveEvents(cmd.getUseActiveEvents());
+        data.setUseStartEvents(cmd.getUseStartEvents());
+        data.setTooltipMessage(messages.getMessage("bpmnViewer.overlays.sendMessage.tooltipMessage"));
+        callJsEncodedArgumentFunction("showSendMessageOverlays", data);
     }
 
     /**
@@ -250,6 +246,16 @@ public class BpmnViewer extends Component implements HasElement, ApplicationCont
      */
     public Registration addCalledProcessOverlayClickListener(ComponentEventListener<CalledProcessOverlayClickEvent> listener) {
         return addListener(CalledProcessOverlayClickEvent.class, listener);
+    }
+
+    /**
+     * Registers a component listener for the {@link SendMessageOverlayClickEvent}.
+     *
+     * @param listener a component listener for the {@link SendMessageOverlayClickEvent}
+     * @return listener registration
+     */
+    public Registration addSendMessagesOverlayClickListener(ComponentEventListener<SendMessageOverlayClickEvent> listener) {
+        return addListener(SendMessageOverlayClickEvent.class, listener);
     }
 
     /**
@@ -329,7 +335,7 @@ public class BpmnViewer extends Component implements HasElement, ApplicationCont
      * </ol>
      *
      * @param number a number for the formatting
-     * @return a string with formatted number
+     * @return a string with a formatted number
      */
     @Nullable
     protected String formatNumber(@Nullable Integer number) {

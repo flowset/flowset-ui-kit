@@ -71,3 +71,12 @@ export class CalledProcessInstanceOverlayClickEvent extends Event {
         this.details = details;
     }
 }
+
+export class SendMessageOverlayClickEvent extends Event {
+    public details: JSON;
+
+    public constructor(details: JSON) {
+        super("send-message-overlay-clicked");
+        this.details = details;
+    }
+}
