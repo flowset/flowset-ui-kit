@@ -12,10 +12,8 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.dom.Style;
-import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import io.jmix.core.Messages;
-import io.jmix.flowui.DialogWindows;
 import io.jmix.flowui.component.UiComponentUtils;
 import io.jmix.flowui.fragment.Fragment;
 import io.jmix.flowui.fragment.FragmentDescriptor;
@@ -29,7 +27,6 @@ import io.openbpm.uikit.component.bpmnviewer.ViewerMode;
 import io.openbpm.uikit.component.bpmnviewer.command.*;
 import io.openbpm.uikit.component.bpmnviewer.event.*;
 import io.openbpm.uikit.component.bpmnviewer.model.ActivityData;
-import io.openbpm.uikit.view.documentation.BpmnElementDocumentationView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 
@@ -43,8 +40,6 @@ public class BpmnViewerFragment extends Fragment<Div> {
     protected final static String BORDER_STYLES = String.join(" ", LumoUtility.Border.ALL, LumoUtility.BorderRadius.LARGE,
             LumoUtility.BorderColor.CONTRAST_30);
 
-    @Autowired
-    protected DialogWindows dialogWindows;
     @Autowired
     protected Messages messages;
 
@@ -63,7 +58,6 @@ public class BpmnViewerFragment extends Fragment<Div> {
     protected boolean showDocumentation;
     protected ViewerMode mode;
     protected BpmnViewer bpmnViewer;
-    protected Registration defaultDocumentationOverlayClickListenerRegistration;
 
     @Subscribe(target = Target.HOST_CONTROLLER)
     public void onHostBeforeShow(final View.BeforeShowEvent event) {
@@ -115,13 +109,6 @@ public class BpmnViewerFragment extends Fragment<Div> {
 
         viewerContainer.removeAll();
         viewerContainer.add(bpmnViewer);
-
-        if (defaultDocumentationOverlayClickListenerRegistration != null) {
-            defaultDocumentationOverlayClickListenerRegistration.remove();
-        }
-
-        defaultDocumentationOverlayClickListenerRegistration =
-                this.bpmnViewer.addDocumentationOverlayClickListener(this::documentationOverlayClicked);
     }
 
     public void addMarker(AddMarkerCmd cmd) {
@@ -194,10 +181,6 @@ public class BpmnViewerFragment extends Fragment<Div> {
     public void addDocumentationOverlayClickListener(
             ComponentEventListener<DocumentationOverlayClickedEvent> listener) {
         if (bpmnViewer != null) {
-            if (defaultDocumentationOverlayClickListenerRegistration != null) {
-                defaultDocumentationOverlayClickListenerRegistration.remove();
-                defaultDocumentationOverlayClickListenerRegistration = null;
-            }
             bpmnViewer.addDocumentationOverlayClickListener(listener);
         }
     }
@@ -290,14 +273,5 @@ public class BpmnViewerFragment extends Fragment<Div> {
                 bpmnViewer.showCalledProcessOverlays(cmd);
             });
         }
-    }
-
-    protected void documentationOverlayClicked(DocumentationOverlayClickedEvent event) {
-        dialogWindows.view(UiComponentUtils.getCurrentView(), BpmnElementDocumentationView.class)
-                .withViewConfigurer(documentationView -> {
-                    documentationView.setElementId(event.getElementId());
-                    documentationView.setElementType(event.getElementType());
-                    documentationView.setElementDocumentation(event.getElementDocumentation());
-                }).open();
     }
 }
