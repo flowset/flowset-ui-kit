@@ -82,7 +82,7 @@ export class OverlayManager {
 
                 const sendMessageOverlay = this.overlays.get({element: element.id, type: OverlayType.SEND_MESSAGE});
                 let customPosition: OverlayPosition;
-                if (sendMessageOverlay) {
+                if (sendMessageOverlay && Array.isArray(sendMessageOverlay) && sendMessageOverlay.length > 0) {
                     // show a documentation overlay on top of the "send message" overlay
                     customPosition = {
                         top: sendMessageOverlay[0].position.top - 25,
