@@ -3,10 +3,10 @@
  * Use is subject to license terms.
  */
 
-rootProject.name = 'openbpm-ui-kit'
+rootProject.name = 'flowset-ui-kit'
 
-include 'openbpm-ui-kit'
-include 'openbpm-ui-kit-starter'
+include 'flowset-ui-kit'
+include 'flowset-ui-kit-starter'
 
 rootProject.children.each { p1 ->
     p1.buildFileName = "${p1.name}.gradle"
