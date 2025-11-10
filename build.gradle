@@ -19,7 +19,7 @@ plugins {
     id 'com.github.spotbugs' version '6.1.7' apply false
 }
 
-group = 'io.openbpm.ui'
+group = 'io.flowset.ui'
 
 subprojects {
     apply plugin: 'java-library'
@@ -33,7 +33,7 @@ subprojects {
     repositories {
         mavenCentral()
         maven {
-            url = 'https://nexus.openbpm.io/repository/public'
+            url = 'https://nexus.flowset.io/repository/public'
         }
         maven {
             url 'https://global.repo.jmix.io/repository/public'
@@ -42,7 +42,7 @@ subprojects {
 
     jmix {
         bomVersion = '2.4.1'
-        projectId = 'openbpm-ui-kit'
+        projectId = 'flowset-ui-kit'
     }
 
     group = this.group
@@ -63,13 +63,13 @@ subprojects {
     }
 
     publishing {
-        if (rootProject.hasProperty('openbpmUploadUrl')) {
+        if (rootProject.hasProperty('flowsetUploadUrl')) {
             repositories {
                 maven {
-                    url = rootProject['openbpmUploadUrl']
+                    url = rootProject['flowsetUploadUrl']
                     credentials {
-                        username rootProject['openbpmUploadUser']
-                        password rootProject['openbpmUploadPassword']
+                        username rootProject['flowsetUploadUser']
+                        password rootProject['flowsetUploadPassword']
                     }
                     allowInsecureProtocol = true
                 }
