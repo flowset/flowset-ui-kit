@@ -1,6 +1,6 @@
-# OpenBPM UI Kit
+# Flowset UI Kit
 
-This repository contains UI components for the OpenBPM platform.
+This repository contains UI components for the Flowset platform.
 
 # License
-OpenBPM UI Kit is an open-source project distributed under the [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) license. 
+Flowset UI Kit is an open-source project distributed under the [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) license. 
