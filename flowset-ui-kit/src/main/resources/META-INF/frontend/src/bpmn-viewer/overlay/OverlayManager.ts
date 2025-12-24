@@ -23,12 +23,18 @@ import BpmnViewer from "../bpm/js/BpmnViewer";
 import ElementRegistry from 'diagram-js/lib/core/ElementRegistry';
 import Canvas from 'diagram-js/lib/core/Canvas';
 import {createNavigationOverlay} from "./createNavigationOverlay";
-import {getMessage, isMessageSupported} from "../utils/bpmnEventUtils";
+import {getMessage, isMessageSupported} from "../utils/eventDefinitionUtils";
 import {createSendMessageOverlay} from "./createSendMessageOverlay";
 import {getBinding, getCalledElement, getVersion, getVersionTag} from "../utils/callActivityUtils";
-import {ElementLike} from "diagram-js/lib/model/Types";
+import {ElementLike, Shape} from "diagram-js/lib/model/Types";
 import {findElementDocumentation} from "../utils/documentationUtils";
 import {createActivityStatisticsOverlay} from "./createActivityStatisticsOverlay";
+import {getElementTransactionBoundary} from "../utils/transactionBoundaryUtils";
+import {forEach} from 'min-dash';
+import {createTransactionBoundaryOverlay} from "./createTransactionBoundaryOverlay";
+import {BeforeElementTransactionType, ElementTransactionBoundary} from "../types";
+import {DEFAULT_LABEL_SIZE} from "bpmn-js/lib/util/LabelUtil";
+import {Point, Rect} from "diagram-js/lib/util/Types";
 
 /**
  * OverlayManager class manages various overlays associated with BPMN diagram elements,
@@ -51,7 +57,10 @@ export class OverlayManager {
      * @param data overlay data
      */
     public showIncidentOverlay(data: IncidentOverlayData) {
-        const incidentOverlay = createIncidentOverlay({tooltipMessage : data.tooltipMessage, incidentCount : data.incidentCount});
+        const incidentOverlay = createIncidentOverlay({
+            tooltipMessage: data.tooltipMessage,
+            incidentCount: data.incidentCount
+        });
         this.overlays.add(data.elementId, OverlayType.INCIDENT_COUNT, incidentOverlay);
     }
 
@@ -117,7 +126,10 @@ export class OverlayManager {
             const handleOverlayClick = () => {
                 handleClick(data.decisionInstanceId);
             }
-            const decisionInstanceOverlay = createNavigationOverlay({title : data.tooltipMessage, handleClick : handleOverlayClick});
+            const decisionInstanceOverlay = createNavigationOverlay({
+                title: data.tooltipMessage,
+                handleClick: handleOverlayClick
+            });
 
             this.overlays.add(element.id, OverlayType.DECISION_INSTANCE, decisionInstanceOverlay);
         }
@@ -148,7 +160,10 @@ export class OverlayManager {
                 }
 
                 const overlayTooltip = `${data.tooltipMessage}: ${message.get("name")}`;
-                const sendMessageOverlay: OverlayAttrs = createSendMessageOverlay({title : overlayTooltip, handleClick : handleOverlayClick});
+                const sendMessageOverlay: OverlayAttrs = createSendMessageOverlay({
+                    title: overlayTooltip,
+                    handleClick: handleOverlayClick
+                });
                 this.overlays.add(element.id, OverlayType.SEND_MESSAGE, sendMessageOverlay);
             }
         });
@@ -167,7 +182,10 @@ export class OverlayManager {
             handleClick(details);
         }
 
-        const calledInstancesOverlay = createNavigationOverlay({title : data.tooltipMessage, handleClick : handleOverlayClick});
+        const calledInstancesOverlay = createNavigationOverlay({
+            title: data.tooltipMessage,
+            handleClick: handleOverlayClick
+        });
 
         this.overlays.add(data.elementId, OverlayType.CALLED_PROCESS_INSTANCE, calledInstancesOverlay);
     }
@@ -197,7 +215,10 @@ export class OverlayManager {
                     }
 
                     const tooltipMessage = `${data.tooltipMessage} (${calledElement})`;
-                    const calledProcessOverlay = createNavigationOverlay({title : tooltipMessage, handleClick : handleOverlayClick});
+                    const calledProcessOverlay = createNavigationOverlay({
+                        title: tooltipMessage,
+                        handleClick: handleOverlayClick
+                    });
 
                     this.overlays.add(element.id, OverlayType.CALLED_PROCESS, calledProcessOverlay);
                 }
@@ -225,6 +246,111 @@ export class OverlayManager {
      */
     public showActivityStatistics(data: NewActivityStatisticsOverlayData) {
         this.overlays.add(data.elementId, OverlayType.ACTIVITY_STATISTICS, createActivityStatisticsOverlay(data));
+    }
+
+    /**
+     * Adds overlays for the transaction boundary (before/after) for all elements.
+     */
+    public addTransactionBoundaryOverlays() {
+        this.overlays.remove({type: OverlayType.TRANSACTION_BOUNDARY});
+
+        const elements: ElementLike[] = this.elementRegistry.filter(element => {
+            return element.type !== 'label';
+        });
+
+        elements.forEach((shape: ElementLike) => {
+            const transactionBoundary: ElementTransactionBoundary = getElementTransactionBoundary(shape);
+
+            if (!transactionBoundary) {
+                return;
+            }
+
+            const addIncomingTransactionBoundaryOverlay = (type: BeforeElementTransactionType) => {
+                const incoming = shape.incoming || [];
+                const hasIncoming = incoming.length > 0;
+
+                if (hasIncoming) {
+                    this.addOverlayForConnections(shape, transactionBoundary, incoming, true, type);
+                } else {
+                    // no incoming connection, calculate position in the front
+                    this.addTransactionBoundaryOverlay(shape, {
+                        x: shape.x,
+                        y: shape.y + shape.height / 2
+                    }, transactionBoundary, type);
+                }
+            };
+
+            if (transactionBoundary.engineWaitState) {
+                addIncomingTransactionBoundaryOverlay(BeforeElementTransactionType.ENGINE_WAIT_STATE)
+            }
+
+            if (transactionBoundary.asyncBefore) {
+                addIncomingTransactionBoundaryOverlay(BeforeElementTransactionType.ASYNC_BEFORE);
+            }
+
+            if (transactionBoundary.asyncAfter) {
+                const outgoing = shape.outgoing || [];
+                const hasOutgoing = outgoing.length > 0;
+
+                if (hasOutgoing) {
+                    this.addOverlayForConnections(shape, transactionBoundary, outgoing, false);
+                } else {
+                    // no outgoing connection, calculate position after the element
+                    this.addTransactionBoundaryOverlay(shape, {
+                        x: shape.x + shape.width,
+                        y: shape.y + shape.height / 2
+                    }, transactionBoundary);
+                }
+            }
+
+        });
+    }
+
+    /**
+     * Adds a transaction boundary overlay to a shape element at a specified waypoint.
+     *
+     * @param {ElementLike} shape - The shape element to which the transaction boundary overlay will be added.
+     * @param {Point} waypoint - The waypoint indicating the location of the transaction boundary.
+     * @param {ElementTransactionBoundary} [transactionBoundary] - Optional parameter representing the transaction boundary element.
+     * @param {BeforeElementTransactionType} [type] - Required for the transactions before the element.
+     */
+    private addTransactionBoundaryOverlay = (shape: ElementLike, waypoint: Point,
+                                             transactionBoundary?: ElementTransactionBoundary, type?: BeforeElementTransactionType): void => {
+        const rect = {...waypoint};
+        const overlay = createTransactionBoundaryOverlay({
+            shape,
+            waypoint: rect,
+            transactionBoundary,
+            beforeType: type
+        });
+        this.overlays.add(shape.id, OverlayType.TRANSACTION_BOUNDARY, overlay);
+    };
+
+    /**
+     * Adds overlays to the provided connections based on transaction boundaries.
+     *
+     * @param {ElementLike} shape - The visual object to which the overlays will be added.
+     * @param {ElementTransactionBoundary} transactionBoundary - The transaction boundary linked to the overlay.
+     * @param {any[]} connections - An array of connections to process for adding overlays.
+     * @param {boolean} isIncoming - Specifies whether the connections are incoming or outgoing.
+     * @return {void} This method does not return a value.
+     */
+    private addOverlayForConnections(shape: ElementLike, transactionBoundary: ElementTransactionBoundary,
+                                     connections: any[], isIncoming: boolean, type?: BeforeElementTransactionType): void {
+        forEach(connections, (connection: any) => {
+            if (connection.type !== 'bpmn:SequenceFlow') {
+                return;
+            }
+
+            let waypoint: Rect;
+            if(isIncoming) {
+                const lastWaypointIndex = connection.waypoints.length - 1;
+                waypoint = connection.waypoints[lastWaypointIndex];
+            } else {
+                waypoint = connection.waypoints[0];
+            }
+            this.addTransactionBoundaryOverlay(shape, waypoint, transactionBoundary, type);
+        });
     }
 
     private shouldRenderSendMessageOverlay(element: ElementLike, data: SendMessageOverlaysData): boolean {

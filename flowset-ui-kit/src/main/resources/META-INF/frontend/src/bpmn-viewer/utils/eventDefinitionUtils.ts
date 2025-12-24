@@ -27,7 +27,7 @@ export const getMessageEventDefinition = (element: ElementLike) => {
     return getEventDefinition(element, 'bpmn:MessageEventDefinition');
 };
 
-export const getEventDefinition = (element: ElementLike, eventType: string)=> {
+export const getEventDefinition = (element: ElementLike, eventType: string) => {
     const businessObject = getBusinessObject(element);
 
     const eventDefinitions = businessObject.get('eventDefinitions') || [];
@@ -35,6 +35,12 @@ export const getEventDefinition = (element: ElementLike, eventType: string)=> {
     return find(eventDefinitions, function (definition: ElementLike) {
         return is(definition, eventType);
     });
+}
+
+export const getEventDefinitions = (element: ElementLike) => {
+    const businessObject = getBusinessObject(element);
+
+    return businessObject.get('eventDefinitions') || [];
 }
 
 export const getMessage = (element: ElementLike) => {

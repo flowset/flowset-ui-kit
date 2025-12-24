@@ -28,4 +28,24 @@
 
     --default-bpmn-element-overlay-size: 1.2em;
     --default-bpmn-element-overlay-font-size: var(--lumo-font-size-xxs);
+
+    --bpmn-async-transaction-overlay-vertical-background: repeating-linear-gradient(to bottom,
+    var(--bpmn-async-transaction-boundary-overlay-color) 0px,
+    var(--bpmn-async-transaction-boundary-overlay-color) 15px,
+    transparent 10px, transparent 20px);
+
+    --bpmn-engine-transaction-overlay-vertical-background: repeating-linear-gradient(to bottom,
+    var(--bpmn-engine-transaction-boundary-overlay-color) 0px,
+    var(--bpmn-engine-transaction-boundary-overlay-color) 15px,
+    transparent 10px, transparent 20px);
+
+    --bpmn-async-transaction-boundary-overlay-horizontal-background: repeating-linear-gradient(to right,
+    var(--bpmn-async-transaction-boundary-overlay-color) 0px,
+    var(--bpmn-async-transaction-boundary-overlay-color) 15px,
+    transparent 10px, transparent 20px);
+
+    --bpmn-engine-transaction-boundary-overlay-horizontal-background: repeating-linear-gradient(to right,
+    var(--bpmn-engine-transaction-boundary-overlay-color) 0px,
+    var(--bpmn-engine-transaction-boundary-overlay-color) 15px,
+    transparent 10px, transparent 20px);
 }

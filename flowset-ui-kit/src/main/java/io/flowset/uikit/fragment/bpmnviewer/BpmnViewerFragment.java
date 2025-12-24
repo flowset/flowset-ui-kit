@@ -60,6 +60,11 @@ public class BpmnViewerFragment extends Fragment<Div> {
     protected BpmnViewer bpmnViewer;
 
     @Subscribe(target = Target.HOST_CONTROLLER)
+    public void onHostInit(final View.InitEvent event) {
+        onInit();
+    }
+
+    @Subscribe(target = Target.HOST_CONTROLLER)
     public void onHostBeforeShow(final View.BeforeShowEvent event) {
         if (!noBorders) {
             viewerVBox.addClassNames(BORDER_STYLES);
@@ -103,7 +108,7 @@ public class BpmnViewerFragment extends Fragment<Div> {
     }
 
     public void initViewer(String bpmnXml) {
-        this.bpmnViewer = uiComponents.create(BpmnViewer.class);
+        this.bpmnViewer = createBpmnViewer();
         this.bpmnViewer.setBpmnXml(bpmnXml);
         this.bpmnViewer.setMode(mode);
 
@@ -273,5 +278,13 @@ public class BpmnViewerFragment extends Fragment<Div> {
                 bpmnViewer.showCalledProcessOverlays(cmd);
             });
         }
+    }
+
+    protected void onInit() {
+
+    }
+
+    protected BpmnViewer createBpmnViewer() {
+        return uiComponents.create(BpmnViewer.class);
     }
 }
