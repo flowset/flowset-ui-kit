@@ -13,6 +13,7 @@ export enum OverlayType {
     ACTIVITY_STATISTICS = 'activity-statistics',
     INCIDENT_COUNT = 'incident-count',
     SEND_MESSAGE = 'send-message',
+    TRANSACTION_BOUNDARY = 'transaction-boundary'
 }
 
 export interface IncidentOverlayData {
