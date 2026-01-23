@@ -280,6 +280,9 @@ public class BpmnViewerFragment extends Fragment<Div> {
         }
     }
 
+    /**
+     * Extension point for initializing the BPMN viewer fragment.
+     */
     protected void onInit() {
 
     }
