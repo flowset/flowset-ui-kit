@@ -165,6 +165,18 @@ class FlowsetBpmnViewer extends LitElement {
         });
     }
 
+    public addTransactionBoundaries() {
+        this.awaitRun(() => {
+            this.overlayManager.addTransactionBoundaryOverlays();
+        });
+    }
+
+    public setTransactionBoundariesVisible(visible: boolean) {
+        this.awaitRun(() => {
+            this.overlayManager.updateOverlaysVisibility(OverlayType.TRANSACTION_BOUNDARY, visible);
+        });
+    }
+
     public addMarker(cmdJson: string) {
         const cmd: AddMarkerCmd = JSON.parse(cmdJson);
         this.awaitRun(() => this.canvas.addMarker(cmd.elementId, cmd.marker));

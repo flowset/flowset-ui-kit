@@ -134,4 +134,20 @@ export const bpmnViewerStyles = css`
         border-radius: var(--lumo-border-radius-m);
         border: var(--bpmn-group-overlay-border);
     }
+    
+    .transaction-boundary-vertical-overlay {
+       background: var(--bpmn-async-transaction-overlay-vertical-background);
+    }
+
+    .transaction-boundary-horizontal-overlay {
+        background: var(--bpmn-async-transaction-boundary-overlay-horizontal-background);
+    }
+
+    .transaction-boundary-vertical-overlay.engine-wait-state {
+       background:  var(--bpmn-engine-transaction-overlay-vertical-background);
+    }
+
+    .transaction-boundary-horizontal-overlay.engine-wait-state {
+       background: var(--bpmn-engine-transaction-boundary-overlay-horizontal-background);
+    }
 `;

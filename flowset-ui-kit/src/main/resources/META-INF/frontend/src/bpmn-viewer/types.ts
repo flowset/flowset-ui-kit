@@ -40,3 +40,14 @@ export interface ActivityData {
     name?: string;
     type: string;
 }
+
+export interface ElementTransactionBoundary {
+    asyncBefore: boolean;
+    asyncAfter: boolean;
+    engineWaitState: boolean;
+}
+
+export enum BeforeElementTransactionType {
+    ENGINE_WAIT_STATE = 'ENGINE_WAIT_STATE',
+    ASYNC_BEFORE = 'ASYNC_BEFORE'
+}
