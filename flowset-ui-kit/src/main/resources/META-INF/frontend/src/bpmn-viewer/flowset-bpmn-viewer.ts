@@ -84,6 +84,8 @@ class FlowsetBpmnViewer extends LitElement {
             const processDefinitions: BpmProcessDefinition[] = findProcessDefinitions(e);
             this.processDefinitionsJson = JSON.stringify(processDefinitions);
             this.dispatchEvent(new XmlImportCompleteEvent(this.processDefinitionsJson));
+
+            this.resetZoom();
         });
     }
 
