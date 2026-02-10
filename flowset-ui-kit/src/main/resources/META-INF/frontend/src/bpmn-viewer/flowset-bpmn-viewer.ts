@@ -13,7 +13,7 @@ import {
     ActivityData,
     AddMarkerCmd,
     BpmProcessDefinition,
-    RemoveMarkerCmd,
+    RemoveMarkerCmd, ScrollToElementCmd,
     SetElementColorCmd,
     ViewerMode
 } from "./types";
@@ -174,6 +174,23 @@ class FlowsetBpmnViewer extends LitElement {
     public setTransactionBoundariesVisible(visible: boolean) {
         this.awaitRun(() => {
             this.overlayManager.updateOverlaysVisibility(OverlayType.TRANSACTION_BOUNDARY, visible);
+        });
+    }
+
+    public scrollToElement(cmdJson: string) {
+        const data: ScrollToElementCmd = JSON.parse(cmdJson);
+        this.awaitRun(() => {
+
+            this.canvas.scrollToElement(data.elementId, {
+                top: 20,
+                right: 20,
+                bottom: 20,
+                left: 20
+            });
+
+            if (data.useAnimation) {
+                this.overlayManager.addAnimationOverlay(data.elementId, data.durationInSec);
+            }
         });
     }
 
