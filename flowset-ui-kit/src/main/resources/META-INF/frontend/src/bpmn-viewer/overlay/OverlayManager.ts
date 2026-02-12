@@ -6,12 +6,12 @@
 import Overlays, {OverlayAttrs} from "diagram-js/lib/features/overlays/Overlays";
 import {createIncidentOverlay} from "./createIncidentOverlay";
 import {
-    NewActivityStatisticsOverlayData,
     CalledInstancesOverlayParams,
     CalledProcessOverlaysParams,
     DecisionInstanceLinkOverlayParams,
     DocumentationOverlayParams,
     IncidentOverlayData,
+    NewActivityStatisticsOverlayData,
     OverlayData,
     OverlayPosition,
     OverlayType,
@@ -26,15 +26,15 @@ import {createNavigationOverlay} from "./createNavigationOverlay";
 import {getMessage, isMessageSupported} from "../utils/eventDefinitionUtils";
 import {createSendMessageOverlay} from "./createSendMessageOverlay";
 import {getBinding, getCalledElement, getVersion, getVersionTag} from "../utils/callActivityUtils";
-import {ElementLike, Shape} from "diagram-js/lib/model/Types";
+import {ElementLike} from "diagram-js/lib/model/Types";
 import {findElementDocumentation} from "../utils/documentationUtils";
 import {createActivityStatisticsOverlay} from "./createActivityStatisticsOverlay";
 import {getElementTransactionBoundary} from "../utils/transactionBoundaryUtils";
 import {forEach} from 'min-dash';
 import {createTransactionBoundaryOverlay} from "./createTransactionBoundaryOverlay";
 import {BeforeElementTransactionType, ElementTransactionBoundary} from "../types";
-import {DEFAULT_LABEL_SIZE} from "bpmn-js/lib/util/LabelUtil";
 import {Point, Rect} from "diagram-js/lib/util/Types";
+import {createAnimationOverlay} from "./createAnimationOverlay";
 
 /**
  * OverlayManager class manages various overlays associated with BPMN diagram elements,
@@ -343,7 +343,7 @@ export class OverlayManager {
             }
 
             let waypoint: Rect;
-            if(isIncoming) {
+            if (isIncoming) {
                 const lastWaypointIndex = connection.waypoints.length - 1;
                 waypoint = connection.waypoints[lastWaypointIndex];
             } else {
@@ -351,6 +351,26 @@ export class OverlayManager {
             }
             this.addTransactionBoundaryOverlay(shape, waypoint, transactionBoundary, type);
         });
+    }
+
+    public addAnimationOverlay(elementId: string, durationInSeconds: number) {
+        const element = this.elementRegistry.get(elementId);
+        if (!element) {
+            console.error('Element not found:', elementId);
+            return;
+        }
+
+        const animationOverlayData = createAnimationOverlay(element);
+
+        const overlayId = this.overlays.add(elementId, animationOverlayData.overlayData);
+
+        setTimeout(() => {
+            animationOverlayData.animationContainer.classList.add('bpmn-animation-overlay-fadeout');
+
+            setTimeout(() => {
+                this.overlays.remove(overlayId);
+            }, 200);
+        }, durationInSeconds * 1000);
     }
 
     private shouldRenderSendMessageOverlay(element: ElementLike, data: SendMessageOverlaysData): boolean {
