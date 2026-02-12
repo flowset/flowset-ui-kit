@@ -150,4 +150,56 @@ export const bpmnViewerStyles = css`
     .transaction-boundary-horizontal-overlay.engine-wait-state {
        background: var(--bpmn-engine-transaction-boundary-overlay-horizontal-background);
     }
+    
+    .bpmn-animation-overlay-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        overflow: visible;
+    }
+
+    @keyframes pulse-glow {
+        0% {
+            box-shadow: 0 0 0 0 var(--bpmn-animation-overlay-pulse-grow-color-1);
+            border-width: 3px;
+            opacity: 0.7;
+        }
+        70% {
+            box-shadow: 0 0 0 10px var(--bpmn-animation-overlay-pulse-grow-color-2);
+            border-width: 5px;
+            opacity: 0.9;
+        }
+        100% {
+            box-shadow: 0 0 0 0 var(--bpmn-animation-overlay-pulse-grow-color-3);
+            border-width: 3px;
+            opacity: 0.7;
+        }
+    }
+
+    @keyframes fadeout {
+        from {
+            opacity: 1;
+            transform: scale(1);
+        }
+        to {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+    }
+
+
+    .bpmn-animation-overlay-fadeout {
+        animation: fadeout 0.5s ease forwards !important;
+    }
+    
+    .bpmn-animation-overlay {
+        position: absolute;
+        border-radius: var(--bpmn-animation-overlay-border-radius);
+        border: var(--bpmn-animation-overlay-border);
+        box-sizing: border-box;
+        animation: pulse-glow 1.5s infinite;
+    }
 `;

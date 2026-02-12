@@ -30,6 +30,12 @@ export interface RemoveMarkerCmd {
     marker: string;
 }
 
+export interface ScrollToElementCmd {
+    elementId: string;
+    useAnimation: boolean;
+    durationInSec: number;
+}
+
 export enum ViewerMode {
     ReadOnly = 'READ_ONLY',
     Interactive = 'INTERACTIVE'
