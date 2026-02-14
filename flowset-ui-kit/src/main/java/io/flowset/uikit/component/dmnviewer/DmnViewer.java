@@ -26,6 +26,10 @@ public class DmnViewer extends Component {
         getElement().callJsFunction("reloadSchema", dmnXml);
     }
 
+    public void setDmnXml(String dmnXml, String decisionDefinitionKey) {
+        getElement().callJsFunction("reloadSchema", dmnXml, decisionDefinitionKey);
+    }
+
     public void setDmnXml(String dmnXml, SerializableConsumer<JsonValue> callback) {
         getElement().callJsFunction("reloadSchema", dmnXml).then(callback);
     }
@@ -51,4 +55,6 @@ public class DmnViewer extends Component {
         }
         getElement().callJsFunction(cmdName, encodedCmd);
     }
+
+
 }

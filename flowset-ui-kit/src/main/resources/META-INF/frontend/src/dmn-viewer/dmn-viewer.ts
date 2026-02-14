@@ -24,6 +24,7 @@ import {dmnEmbeddedStyle} from './style/dmn-embedded-style.js';
 
 import {XmlImportCompleteEvent} from "./events";
 import {DmnDecisionDefinition} from "./types";
+import {dmnViewerStyles} from "./style/dmnViewerStyles";
 
 // @ts-ignore
 @customElement('flowset-control-dmn-viewer')
@@ -40,8 +41,7 @@ class FlowsetControlDmnViewer extends LitElement {
         dmnJsDrdStyles,
         dmnJsLiteralExpressionStyle,
         dmnJsSharedStyle,
-        css`
-        `
+        dmnViewerStyles,
       ];
 
     constructor() {
@@ -69,14 +69,25 @@ class FlowsetControlDmnViewer extends LitElement {
         };
     }
 
-    public async reloadSchema(xmlSchema: string) {
+    public async reloadSchema(xmlSchema: string, decisionDefinitionKey?: string) {
         await this.viewer.importXML(xmlSchema);
+        const dmnViewerHolder = this.shadowRoot.getElementById(this.DMN_VIEWER_HOLDER)!
+        if (decisionDefinitionKey) {
+            dmnViewerHolder.classList.add('no-drd-button');
+            this.showDecision(decisionDefinitionKey);
+        } else {
+            dmnViewerHolder.classList.remove('no-drd-button');
+        }
     }
 
     public async showDecisionDefinition(decisionDefinitionKey: string) {
+        this.showDecision(decisionDefinitionKey);
+    }
+
+    private showDecision(decisionDefinitionKey: string) {
         const views = this.viewer.getViews();
         const decisionTableViews = views.filter( ({type, id}:{type: string, id:string}) =>
-                type === "decisionTable" && id === decisionDefinitionKey);
+            type === "decisionTable" && id === decisionDefinitionKey);
         if (decisionTableViews && decisionTableViews.length > 0) {
             this.viewer.open(decisionTableViews[0]);
         } else {

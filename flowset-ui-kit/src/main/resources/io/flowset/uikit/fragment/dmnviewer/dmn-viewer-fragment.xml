@@ -5,6 +5,8 @@
 
 <fragment xmlns="http://jmix.io/schema/flowui/fragment">
     <content>
-        <div id="viewerContainer" width="100%" height="100%"/>
+        <div id="viewerVBox" width="100%" height="100%" classNames="p-s box-border">
+            <div id="viewerContainer" width="100%" height="100%"/>
+        </div>
     </content>
 </fragment>
