@@ -202,6 +202,12 @@ public class BpmnViewerFragment extends Fragment<Div> {
         }
     }
 
+    public void addDecisionLinkOverlayClickListener(ComponentEventListener<DecisionLinkOverlayClickEvent> listener) {
+        if (bpmnViewer != null) {
+            bpmnViewer.addDecisionLinkOverlayClickListener(listener);
+        }
+    }
+
     public void addSendMessageOverlayClickListener(ComponentEventListener<SendMessageOverlayClickEvent> listener) {
         if (bpmnViewer != null) {
             bpmnViewer.addSendMessagesOverlayClickListener(listener);
@@ -276,6 +282,17 @@ public class BpmnViewerFragment extends Fragment<Div> {
                 cmd.setVisible(true);
 
                 bpmnViewer.showCalledProcessOverlays(cmd);
+            });
+        }
+    }
+
+    public void showDecisionLinkOverlays() {
+        if (bpmnViewer != null) {
+            bpmnViewer.addImportCompleteListener(event -> {
+                ShowDecisionLinkOverlaysCmd cmd = new ShowDecisionLinkOverlaysCmd();
+                cmd.setVisible(true);
+
+                bpmnViewer.showDecisionLinkOverlays(cmd);
             });
         }
     }

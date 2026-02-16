@@ -18,7 +18,7 @@ import {
     ViewerMode
 } from "./types";
 import {
-    BpmnElementClickEvent,
+    BpmnElementClickEvent, DecisionLinkOverlayClickEvent,
     CalledProcessInstanceOverlayClickEvent,
     CalledProcessOverlayClickEvent,
     DecisionInstanceLinkOverlayClickedEvent,
@@ -43,7 +43,7 @@ import {
     DocumentationOverlayData,
     IncidentOverlayData,
     OverlayType,
-    SendMessageOverlaysData
+    SendMessageOverlaysData, DecisionLinkOverlaysData
 } from "./overlay/types";
 import {findProcessDefinitions} from "./utils/findProcessDefinitions";
 
@@ -152,6 +152,17 @@ class FlowsetBpmnViewer extends LitElement {
                 this.dispatchEvent(new CalledProcessOverlayClickEvent(element.id, callActivityData));
             }
             this.overlayManager.showCalledProcessOverlays({data: cmd, handleClick: handleOverlayClick});
+        });
+    }
+
+    public showDecisionLinkOverlays(cmdJson: string) {
+        const cmd: DecisionLinkOverlaysData = JSON.parse(cmdJson);
+
+        this.awaitRun(() => {
+            const handleOverlayClick = (element: ElementLike, businessRuleTaskData: JSON) => {
+                this.dispatchEvent(new DecisionLinkOverlayClickEvent(element.id, businessRuleTaskData));
+            }
+            this.overlayManager.showDecisionLinkOverlays({data: cmd, handleClick: handleOverlayClick});
         });
     }
 

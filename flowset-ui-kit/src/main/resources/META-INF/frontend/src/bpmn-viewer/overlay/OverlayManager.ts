@@ -16,7 +16,7 @@ import {
     OverlayPosition,
     OverlayType,
     SendMessageOverlaysData,
-    SendMessageOverlaysParams
+    SendMessageOverlaysParams, DecisionLinkOverlaysParams
 } from "./types";
 import {createDocumentationOverlay} from "./createDocumentationOverlay";
 import BpmnViewer from "../bpm/js/BpmnViewer";
@@ -35,6 +35,12 @@ import {createTransactionBoundaryOverlay} from "./createTransactionBoundaryOverl
 import {BeforeElementTransactionType, ElementTransactionBoundary} from "../types";
 import {Point, Rect} from "diagram-js/lib/util/Types";
 import {createAnimationOverlay} from "./createAnimationOverlay";
+import {
+    getDecisionBinding,
+    getDecisionRef,
+    getDecisionVersion,
+    getDecisionVersionTag
+} from "../utils/businessRuleTaskUtils";
 
 /**
  * OverlayManager class manages various overlays associated with BPMN diagram elements,
@@ -221,6 +227,37 @@ export class OverlayManager {
                     });
 
                     this.overlays.add(element.id, OverlayType.CALLED_PROCESS, calledProcessOverlay);
+                }
+            });
+        }
+    }
+
+    public showDecisionLinkOverlays({data, handleClick}: DecisionLinkOverlaysParams) {
+        this.overlays.remove({type: OverlayType.DECISION});
+
+        if (data.visible) {
+            const elements: ElementLike[] = this.elementRegistry.filter(element => element.type == "bpmn:BusinessRuleTask");
+            elements.forEach((element: ElementLike) => {
+                const decisionRef = getDecisionRef(element);
+                if (decisionRef && decisionRef.length > 0) {
+                    const handleOverlayClick = () => {
+                        const businessRuleTaskData = <JSON><unknown>{
+                            "decisionRef": decisionRef,
+                            "version": getDecisionVersion(element),
+                            "versionTag": getDecisionVersionTag(element),
+                            "binding": getDecisionBinding(element),
+                        };
+
+                        handleClick(element, businessRuleTaskData);
+                    }
+
+                    const tooltipMessage = `${data.tooltipMessage} (${decisionRef})`;
+                    const decisionOverlay = createNavigationOverlay({
+                        title: tooltipMessage,
+                        handleClick: handleOverlayClick
+                    });
+
+                    this.overlays.add(element.id, OverlayType.DECISION, decisionOverlay);
                 }
             });
         }
