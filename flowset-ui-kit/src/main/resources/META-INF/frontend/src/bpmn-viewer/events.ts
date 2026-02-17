@@ -63,6 +63,19 @@ export class CalledProcessOverlayClickEvent extends Event {
 
 }
 
+export class DecisionLinkOverlayClickEvent extends Event {
+    public elementId: string;
+    public businessRuleTask: JSON;
+
+    public constructor(elementId: string, businessRuleTask: JSON) {
+        super("decision-link-overlay-clicked");
+
+        this.elementId = elementId;
+        this.businessRuleTask = businessRuleTask;
+    }
+
+}
+
 export class CalledProcessInstanceOverlayClickEvent extends Event {
     public details: JSON;
 

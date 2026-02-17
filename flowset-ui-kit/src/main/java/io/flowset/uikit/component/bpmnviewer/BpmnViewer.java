@@ -160,6 +160,19 @@ public class BpmnViewer extends Component implements HasElement, ApplicationCont
     }
 
     /**
+     * Shows or hides the overlays for Business Rule Task elements on the diagram to navigate to the decision definition.
+     *
+     * @param cmd command data
+     */
+    public void showDecisionLinkOverlays(ShowDecisionLinkOverlaysCmd cmd) {
+        DecisionLinkOverlayData overlayData = new DecisionLinkOverlayData();
+        overlayData.setVisible(cmd.isVisible());
+        overlayData.setTooltipMessage(messages.getMessage("bpmnViewer.overlays.showDecision.tooltipMessage"));
+
+        callJsEncodedArgumentFunction("showDecisionLinkOverlays", overlayData);
+    }
+
+    /**
      * Shows the overlay for the specified diagram element to navigate to the called process instances.
      *
      * @param cmd command data
@@ -246,6 +259,15 @@ public class BpmnViewer extends Component implements HasElement, ApplicationCont
      */
     public Registration addCalledProcessOverlayClickListener(ComponentEventListener<CalledProcessOverlayClickEvent> listener) {
         return addListener(CalledProcessOverlayClickEvent.class, listener);
+    }
+
+    /**
+     * Registers a component listener for the {@link DecisionLinkOverlayClickEvent}.
+     * @param listener a component listener for the {@link DecisionLinkOverlayClickEvent}
+     * @return listener registration
+     */
+    public Registration addDecisionLinkOverlayClickListener(ComponentEventListener<DecisionLinkOverlayClickEvent> listener) {
+        return addListener(DecisionLinkOverlayClickEvent.class, listener);
     }
 
     /**
