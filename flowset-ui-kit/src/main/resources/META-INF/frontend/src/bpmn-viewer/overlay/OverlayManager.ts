@@ -16,7 +16,8 @@ import {
     OverlayPosition,
     OverlayType,
     SendMessageOverlaysData,
-    SendMessageOverlaysParams, DecisionLinkOverlaysParams
+    SendMessageOverlaysParams,
+    DecisionLinkOverlaysParams
 } from "./types";
 import {createDocumentationOverlay} from "./createDocumentationOverlay";
 import BpmnViewer from "../bpm/js/BpmnViewer";

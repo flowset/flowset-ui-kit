@@ -18,7 +18,8 @@ import {
     ViewerMode
 } from "./types";
 import {
-    BpmnElementClickEvent, DecisionLinkOverlayClickEvent,
+    BpmnElementClickEvent,
+    DecisionLinkOverlayClickEvent,
     CalledProcessInstanceOverlayClickEvent,
     CalledProcessOverlayClickEvent,
     DecisionInstanceLinkOverlayClickedEvent,
@@ -43,7 +44,8 @@ import {
     DocumentationOverlayData,
     IncidentOverlayData,
     OverlayType,
-    SendMessageOverlaysData, DecisionLinkOverlaysData
+    SendMessageOverlaysData,
+    DecisionLinkOverlaysData
 } from "./overlay/types";
 import {findProcessDefinitions} from "./utils/findProcessDefinitions";
 
