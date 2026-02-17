@@ -7,6 +7,7 @@ import {ElementLike} from "diagram-js/lib/model/Types";
 
 export enum OverlayType {
     DOCUMENTATION = 'documentation',
+    DECISION = 'decision',
     DECISION_INSTANCE = 'decision-instance',
     CALLED_PROCESS = 'called-process',
     CALLED_PROCESS_INSTANCE = 'called-process-instance',
@@ -88,8 +89,18 @@ export interface CalledProcessOverlaysData {
     visible?: boolean;
     tooltipMessage?: string;
 }
+
+export interface DecisionLinkOverlaysData {
+    visible?: boolean;
+    tooltipMessage?: string;
+}
 export interface CalledProcessOverlaysParams {
     data: CalledProcessOverlaysData;
     handleClick: (element: any, callActivityData: JSON) => void;
+}
+
+export interface DecisionLinkOverlaysParams {
+    data: DecisionLinkOverlaysData;
+    handleClick: (element: any, businessRuleTaskData: JSON) => void;
 }
 
