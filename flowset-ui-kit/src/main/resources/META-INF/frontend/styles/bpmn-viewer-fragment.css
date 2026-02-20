@@ -3,12 +3,28 @@
  * Use is subject to license terms.
  */
 
-.bpmn-viewer-zoom-reset-btn {
+.bpmn-viewer-right-side-actions {
     z-index: 1;
-    right: 2em;
+    right: 1em;
     position: fixed;
     margin-top: 0.5em;
     font-size: large;
+
+    background-color: var(--lumo-base-color);
+    border: 1px solid var(--lumo-contrast-20pct);
+    border-radius: var(--lumo-border-radius-m);
+    box-shadow: var(--lumo-box-shadow-xs);
+}
+
+.jmix-dialog-window-view-wrapper .bpmn-viewer-right-side-actions {
+    position: absolute;
+    right: 2em;
+}
+
+.bpmn-viewer-right-side-actions > *:not(:last-child) {
+    border-bottom: 1px solid var(--lumo-contrast-20pct);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 .bpmn-viewer-left-side-actions {

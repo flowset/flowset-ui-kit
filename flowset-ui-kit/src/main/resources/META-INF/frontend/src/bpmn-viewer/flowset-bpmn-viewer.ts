@@ -13,16 +13,17 @@ import {
     ActivityData,
     AddMarkerCmd,
     BpmProcessDefinition,
-    RemoveMarkerCmd, ScrollToElementCmd,
+    RemoveMarkerCmd,
+    ScrollToElementCmd,
     SetElementColorCmd,
     ViewerMode
 } from "./types";
 import {
     BpmnElementClickEvent,
-    DecisionLinkOverlayClickEvent,
     CalledProcessInstanceOverlayClickEvent,
     CalledProcessOverlayClickEvent,
     DecisionInstanceLinkOverlayClickedEvent,
+    DecisionLinkOverlayClickEvent,
     DocumentationOverlayClickedEvent,
     SendMessageOverlayClickEvent,
     XmlImportCompleteEvent
@@ -37,15 +38,15 @@ import {bpmnViewerStyles} from "./styles/bpmnViewerStyles";
 import {OverlayManager} from "./overlay/OverlayManager";
 import {ElementLike} from "diagram-js/lib/model/Types";
 import {
-    NewActivityStatisticsOverlayData,
     CalledInstancesOverlayData,
     CalledProcessOverlaysData,
     DecisionInstanceLinkOverlayData,
+    DecisionLinkOverlaysData,
     DocumentationOverlayData,
     IncidentOverlayData,
+    NewActivityStatisticsOverlayData,
     OverlayType,
-    SendMessageOverlaysData,
-    DecisionLinkOverlaysData
+    SendMessageOverlaysData
 } from "./overlay/types";
 import {findProcessDefinitions} from "./utils/findProcessDefinitions";
 
@@ -64,6 +65,7 @@ class FlowsetBpmnViewer extends LitElement {
     private zoomScroll: ZoomScroll;
     private eventBus: EventBus;
     private overlayManager: OverlayManager;
+    private viewerHolder: HTMLDivElement | undefined;
 
     private processDefinitionsJson: string;
 
@@ -220,7 +222,22 @@ class FlowsetBpmnViewer extends LitElement {
     }
 
     public resetZoom() {
-        this.awaitRun(() => this.zoomScroll.reset());
+        this.awaitRun(() => {
+            this.canvas.resized();
+            this.canvas.zoom('fit-viewport', 'auto');
+        });
+    }
+
+    public zoomByStep(step: number) {
+        this.awaitRun(() => {
+            if (!this.viewerHolder) {
+                this.viewerHolder = this.shadowRoot.getElementById(this.BPMN_VIEWER_HOLDER) as HTMLDivElement;
+            }
+            this.zoomScroll.zoom(step, {
+                x: this.viewerHolder.offsetWidth / 2,
+                y: this.viewerHolder.offsetHeight / 2
+            });
+        });
     }
 
     public setMode(mode?: string) {
