@@ -138,6 +138,15 @@ public class BpmnViewer extends Component implements HasElement, ApplicationCont
         getElement().callJsFunction("resetZoom");
     }
 
+    /**
+     * Zooms the viewer by a specified step.
+     *
+     * @param step the zoom step, positive for zooming in, negative for zooming out
+     */
+    public void zoomByStep(double step) {
+        getElement().callJsFunction("zoomByStep", step);
+    }
+
     public void showDecisionInstanceLinkOverlay(ShowDecisionInstanceLinkOverlayCmd cmd) {
         callJsEncodedArgumentFunction("showDecisionInstanceLinkOverlay", cmd);
     }
@@ -263,6 +272,7 @@ public class BpmnViewer extends Component implements HasElement, ApplicationCont
 
     /**
      * Registers a component listener for the {@link DecisionLinkOverlayClickEvent}.
+     *
      * @param listener a component listener for the {@link DecisionLinkOverlayClickEvent}
      * @return listener registration
      */

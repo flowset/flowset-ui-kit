@@ -6,8 +6,15 @@
 <fragment xmlns="http://jmix.io/schema/flowui/fragment">
     <content>
         <div id="viewerVBox" width="100%" height="100%">
-            <button id="zoomResetBtn" icon="CROSSHAIRS" themeNames="tertiary-inline"
-                   classNames="bpmn-viewer-zoom-reset-btn" title="msg:///bpmnViewer.actions.ZoomReset"/>
+            <vbox id="actionsRightBox" padding="false" width="AUTO" classNames="bpmn-viewer-right-side-actions" spacing="false">
+                <button id="zoomResetBtn" icon="CROSSHAIRS" themeNames="tertiary-inline" title="msg:///bpmnViewer.actions.ZoomReset"/>
+
+                <button id="zoomInBtn" icon="PLUS" themeNames="tertiary-inline"
+                        title="msg:///bpmnViewer.actions.ZoomIn"/>
+                <button id="zoomOutBtn" icon="MINUS" themeNames="tertiary-inline"
+                        title="msg:///bpmnViewer.actions.ZoomOut"/>
+            </vbox>
+
             <vbox id="actionsLeftBox" padding="false" themeNames="spacing-xs" classNames="bpmn-viewer-left-side-actions" width="1.85em">
                 <button id="showStatisticsBtn" themeNames="tertiary-inline"
                         title="msg:///bpmnViewer.actions.showActivityStatistics"
