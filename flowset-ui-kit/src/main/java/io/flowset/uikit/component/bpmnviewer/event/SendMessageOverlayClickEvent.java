@@ -8,8 +8,11 @@ package io.flowset.uikit.component.bpmnviewer.event;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.DomEvent;
 import com.vaadin.flow.component.EventData;
+import elemental.json.JsonNull;
 import elemental.json.JsonObject;
+import elemental.json.JsonValue;
 import io.flowset.uikit.component.bpmnviewer.BpmnViewer;
+import org.springframework.lang.Nullable;
 
 /**
  * An event that is fired when the overlay for sending a message is clicked.
@@ -37,7 +40,7 @@ public class SendMessageOverlayClickEvent extends ComponentEvent<BpmnViewer> {
         this.messageName = details.getString("messageName");
         this.elementType = details.getString("elementType");
         this.elementId = details.getString("elementId");
-        this.elementName = details.getString("elementName");
+        this.elementName = getElementName(details);
     }
 
     public String getMessageName() {
@@ -54,5 +57,15 @@ public class SendMessageOverlayClickEvent extends ComponentEvent<BpmnViewer> {
 
     public String getElementName() {
         return elementName;
+    }
+
+    @Nullable
+    protected String getElementName(JsonObject details) {
+        if (!details.hasKey("elementName")) {
+            return null;
+        }
+
+        JsonValue elementNameValue = details.get("elementName");
+        return elementNameValue instanceof JsonNull ? null : elementNameValue.asString();
     }
 }
