@@ -83,8 +83,6 @@ export const createTransactionBoundaryOverlay = ({
         position.left = -width - margin;
         position.top = -offset;
 
-        console.log("left position: ", beforeType, width, margin)
-
         // if orientation is either 'right', 'top-right' or 'bottom-right'
     } else if (/right/.test(orientation)) {
 

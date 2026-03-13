@@ -20,10 +20,11 @@ import com.vaadin.flow.component.page.PendingJavaScriptResult;
 import com.vaadin.flow.internal.JsonUtils;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.shared.Registration;
-import io.jmix.core.Messages;
 import io.flowset.uikit.component.bpmnviewer.command.*;
 import io.flowset.uikit.component.bpmnviewer.event.*;
 import io.flowset.uikit.component.bpmnviewer.model.*;
+import io.jmix.core.Messages;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -32,6 +33,7 @@ import org.springframework.lang.Nullable;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
@@ -127,8 +129,8 @@ public class BpmnViewer extends Component implements HasElement, ApplicationCont
      *
      * @param activeElements a list of element identifiers that can be clicked on the diagram.
      */
-    public void setActiveElements(List<String> activeElements) {
-        callJsEncodedArgumentFunction("setActiveElements", activeElements);
+    public void setActiveElements(@Nullable Collection<String> activeElements) {
+        callJsEncodedArgumentFunction("setActiveElements", CollectionUtils.emptyIfNull(activeElements));
     }
 
     /**
@@ -145,6 +147,15 @@ public class BpmnViewer extends Component implements HasElement, ApplicationCont
      */
     public void zoomByStep(double step) {
         getElement().callJsFunction("zoomByStep", step);
+    }
+
+    /**
+     * Sets a list of elements that should be disabled in the viewer interactive mode.
+     *
+     * @param disabledElements disabled elements
+     */
+    public void setDisabledElements(@Nullable Collection<String> disabledElements) {
+        callJsEncodedArgumentFunction("setDisabledElements", CollectionUtils.emptyIfNull(disabledElements));
     }
 
     public void showDecisionInstanceLinkOverlay(ShowDecisionInstanceLinkOverlayCmd cmd) {

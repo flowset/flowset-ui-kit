@@ -54,7 +54,7 @@ import {findProcessDefinitions} from "./utils/findProcessDefinitions";
 class FlowsetBpmnViewer extends LitElement {
     private readonly BPMN_VIEWER_HOLDER: string = "bpmnViewerHolder";
 
-    private readonly IGNORED_ACTIVITY_TYPES: string[] = ["bpmn:Participant", "bpmn:SequenceFlow", "bpmn:Collaboration", "bpmn:Process"];
+    private readonly IGNORED_ACTIVITY_TYPES: string[] = ["bpmn:Participant", "bpmn:SequenceFlow", "bpmn:Collaboration", "bpmn:Process", "label"];
 
     private shadowRoot: any;
 
@@ -70,6 +70,8 @@ class FlowsetBpmnViewer extends LitElement {
     private processDefinitionsJson: string;
 
     private mode: string;
+    private activeElements?: string[];
+    private disabledElements?: string[];
 
     static get styles() {
         return bpmnViewerStyles;
@@ -243,25 +245,19 @@ class FlowsetBpmnViewer extends LitElement {
     public setMode(mode?: string) {
         this.mode = mode;
         if (mode === ViewerMode.Interactive) {
-            const ignoredTypes: string[] = ["bpmn:Participant", "bpmn:SequenceFlow", "bpmn:Collaboration", "bpmn:Process"];
-            const isActiveElement = element => {
-                const type: string | undefined = element.type;
-                return type && ignoredTypes.indexOf(type) === -1;
-            }
-            this.addElementInteractionListeners(isActiveElement)
-
+            this.removeElementInteractionListeners();
+            this.addElementInteractionListeners((element) => this.isActiveElement(element));
         } else if (!mode || mode === ViewerMode.ReadOnly) {
             this.removeElementInteractionListeners();
         }
     }
 
-    public setActiveElements(activeElements?: string[]) {
-        if (this.mode == ViewerMode.Interactive && activeElements?.length > 0) {
-            const isActiveElement = element => activeElements.indexOf(element.id) !== -1
+    public setActiveElements(activeElements?: string) {
+        this.activeElements = activeElements ? JSON.parse(activeElements) as string[] : undefined;
+    }
 
-            this.removeElementInteractionListeners();
-            this.addElementInteractionListeners(isActiveElement);
-        }
+    public setDisabledElements(elements?: string) {
+        this.disabledElements = elements ? JSON.parse(elements) as string[] : undefined;
     }
 
     public setActivityStatisticsVisible(visible: boolean) {
@@ -304,6 +300,27 @@ class FlowsetBpmnViewer extends LitElement {
         });
     }
 
+    private isActiveElement(element) {
+        const type: string = element.type;
+
+        const elementId: string = element.id;
+
+        let isConfiguredActive = true; // an element is in manually set active elements
+        if (this.activeElements && this.activeElements.length > 0) {
+            isConfiguredActive = this.activeElements.indexOf(elementId) !== -1;
+
+        }
+
+        let isConfiguredDisabled = false; // an element is in manually set disabled elements
+        if (this.disabledElements && this.disabledElements.length > 0) {
+            isConfiguredDisabled = this.disabledElements.indexOf(elementId) !== -1;
+        }
+
+        const ignoredByType = type && this.IGNORED_ACTIVITY_TYPES.indexOf(type) !== -1; // element is ignored by type
+
+        return isConfiguredActive && !isConfiguredDisabled && !ignoredByType;
+    }
+
     private addElementInteractionListeners(isElementActive: (element: any) => boolean) {
         this.eventBus.on('element.hover', (event: any) => {
             const elementActive = isElementActive(event.element);
@@ -313,8 +330,8 @@ class FlowsetBpmnViewer extends LitElement {
         });
 
         this.eventBus.on('element.out', (event: any) => {
-            const elementActive = isElementActive(event.element);
-            if (elementActive) {
+            const hasMarker = this.canvas.hasMarker(event.element.id, 'activity-hover');
+            if (hasMarker) { // an active element can become disabled after click, need to remove marker anyway
                 this.canvas.removeMarker(event.element.id, 'activity-hover');
             }
         });

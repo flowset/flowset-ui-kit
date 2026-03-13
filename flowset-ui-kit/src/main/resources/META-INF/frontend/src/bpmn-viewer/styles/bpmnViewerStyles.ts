@@ -10,25 +10,29 @@ export const bpmnViewerStyles = css`
         fill: var(--bpmn-running-activity-color) !important;
     }
 
-    .modification-source-activity:not(.djs-connection) .djs-visual > :nth-child(1) {
-        stroke: var(--bpmn-modification-source-activity-stroke-color) !important;
-        fill: var(--bpmn-modification-source-activity-bg-color) !important;
+    .modification-source-activity:not(.djs-connection) .djs-visual {
+        outline: var(--bpmn-select-overlay-width) solid var(--bpmn-modification-source-activity-stroke-color) !important;
+        border-radius: var(--bpmn-select-overlay-border-radius);
+        outline-offset: var(--bpmn-select-overlay-offset);
     }
 
-    .modification-target-activity:not(.djs-connection) .djs-visual > :nth-child(1) {
-        stroke: var(--bpmn-modification-target-activity-stroke-color) !important;
-        fill: var(--bpmn-modification-target-activity-bg-color) !important;
+    .modification-target-activity:not(.djs-connection) .djs-visual {
+        outline: var(--bpmn-select-overlay-width) solid var(--bpmn-modification-target-activity-stroke-color) !important;
+        border-radius: var(--bpmn-select-overlay-border-radius);
+        outline-offset: var(--bpmn-select-overlay-offset);
     }
 
-    .activity-hover:not(.djs-connection) .djs-visual > :nth-child(1) {
-        stroke: var(--bpmn-activity-hover-stroke-color) !important;
-        fill: var(--bpmn-activity-hover-fill-color) !important;
+    .activity-hover:not(.djs-connection) .djs-visual  {
         cursor: pointer;
+        outline: var(--bpmn-select-overlay-width) solid var(--bpmn-activity-hover-stroke-color) !important;
+        border-radius: var(--bpmn-select-overlay-border-radius);
+        outline-offset: var(--bpmn-select-overlay-offset);
     }
 
-    .primary-color-activity:not(.djs-connection) .djs-visual > :nth-child(1) {
-        stroke: var(--lumo-primary-color) !important;
-        fill: var(--lumo-primary-color-10pct) !important;
+    .primary-color-activity:not(.djs-connection) .djs-visual {
+        outline: var(--bpmn-select-overlay-width) solid var(--bpmn-activity-primary-stroke-color) !important;
+        border-radius: var(--bpmn-select-overlay-border-radius);
+        outline-offset: var(--bpmn-select-overlay-offset);
     }
 
     .activity-statistics-overlay {

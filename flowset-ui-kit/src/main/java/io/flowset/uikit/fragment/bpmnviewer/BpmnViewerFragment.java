@@ -10,6 +10,7 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import io.jmix.core.Messages;
 import io.jmix.flowui.fragment.Fragment;
@@ -27,6 +28,7 @@ import io.flowset.uikit.component.bpmnviewer.model.ActivityData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -199,7 +201,7 @@ public class BpmnViewerFragment extends Fragment<Div> {
      *
      * @param activeElements the list of clickable element IDs
      */
-    public void setActiveElements(List<String> activeElements) {
+    public void setActiveElements(Collection<String> activeElements) {
         if (this.bpmnViewer != null) {
             this.bpmnViewer.setActiveElements(activeElements);
         }
@@ -277,11 +279,14 @@ public class BpmnViewerFragment extends Fragment<Div> {
      * Adds a listener for element click events.
      *
      * @param listener the listener to add
+     * @return a registration for the listener
      */
-    public void addElementClickListener(ComponentEventListener<ElementClickEvent> listener) {
+    @Nullable
+    public Registration addElementClickListener(ComponentEventListener<ElementClickEvent> listener) {
         if (bpmnViewer != null) {
-            bpmnViewer.addElementClickListener(listener);
+            return bpmnViewer.addElementClickListener(listener);
         }
+        return null;
     }
 
     /**

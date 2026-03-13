@@ -5,18 +5,22 @@
 
 :root {
     --bpmn-running-activity-color: hsla(214, 100%, 49%, 0.16);
-    --bpmn-modification-source-activity-stroke-color: #006ae6;
+    --bpmn-modification-source-activity-stroke-color: rgba(0, 106, 230, 0.7);
     --bpmn-modification-source-activity-bg-color: #d9edff;
-    --bpmn-modification-target-activity-stroke-color: #00997a;
+    --bpmn-modification-target-activity-stroke-color: rgba(0, 153, 122, 0.7);
     --bpmn-modification-target-activity-bg-color: #d9f7ee;
     --bpmn-activity-hover-fill-color: var(--lumo-primary-color-10pct);
-    --bpmn-activity-hover-stroke-color: var(--lumo-primary-color);
+    --bpmn-activity-hover-stroke-color: var(--lumo-primary-color-50pct);
+    --bpmn-activity-primary-stroke-color: var(--lumo-primary-color);
     --bpmn-incident-overlay-bg-color: hsl(1, 92%, 91%);
     --bpmn-incident-overlay-text-color: var(--lumo-error-color);
     --bpmn-incident-overlay-border: 2px solid var(--lumo-error-color);
     --bpmn-navigation-overlay-background: var(--lumo-primary-color);
     --bpmn-send-message-overlay-background: transparent;
     --bpmn-send-message-overlay-fill: var(--lumo-primary-color);
+    --bpmn-select-overlay-width: 4px;
+    --bpmn-select-overlay-offset: 2px;
+    --bpmn-select-overlay-border-radius: var(--lumo-border-radius-m);
 
     --bpmn-group-overlay-background-color: #fff;
     --bpmn-group-overlay-border-color: var(--lumo-contrast-30pct);
