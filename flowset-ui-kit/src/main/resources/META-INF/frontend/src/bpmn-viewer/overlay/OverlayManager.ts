@@ -9,6 +9,7 @@ import {
     CalledInstancesOverlayParams,
     CalledProcessOverlaysParams,
     DecisionInstanceLinkOverlayParams,
+    DecisionLinkOverlaysParams,
     DocumentationOverlayParams,
     IncidentOverlayData,
     NewActivityStatisticsOverlayData,
@@ -16,8 +17,7 @@ import {
     OverlayPosition,
     OverlayType,
     SendMessageOverlaysData,
-    SendMessageOverlaysParams,
-    DecisionLinkOverlaysParams
+    SendMessageOverlaysParams
 } from "./types";
 import {createDocumentationOverlay} from "./createDocumentationOverlay";
 import BpmnViewer from "../bpm/js/BpmnViewer";
@@ -284,6 +284,15 @@ export class OverlayManager {
      */
     public showActivityStatistics(data: NewActivityStatisticsOverlayData) {
         this.overlays.add(data.elementId, OverlayType.ACTIVITY_STATISTICS, createActivityStatisticsOverlay(data));
+    }
+
+    /**
+     * Removes an overlay with the specified type for the specified element.
+     * @param activityId element identifier
+     * @param overlayType overlay type
+     */
+    public removeOverlay(activityId: string, overlayType: string) {
+        this.overlays.remove({element: activityId, type: overlayType});
     }
 
     /**

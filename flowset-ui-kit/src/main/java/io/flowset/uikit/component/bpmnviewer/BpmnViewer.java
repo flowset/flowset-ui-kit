@@ -351,6 +351,16 @@ public class BpmnViewer extends Component implements HasElement, ApplicationCont
     }
 
     /**
+     * Removes an overlay with the activity statistics for the specified diagram element.
+     *
+     * @param activityId the identifier of the activity to remove statistics for
+     */
+    public void removeActivityStatistics(String activityId) {
+        callJsEncodedArgumentFunction("removeActivityStatistics", activityId);
+    }
+
+
+    /**
      * Makes all overlays with the activity statistics visible or not.
      *
      * @param visible whether to show or hide the activity statistics overlays

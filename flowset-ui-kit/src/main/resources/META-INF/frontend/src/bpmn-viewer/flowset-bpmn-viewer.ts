@@ -272,6 +272,12 @@ class FlowsetBpmnViewer extends LitElement {
         });
     }
 
+    public removeActivityStatistics(activityId: string) {
+        this.awaitRun(() => {
+            this.overlayManager.removeOverlay(activityId, OverlayType.ACTIVITY_STATISTICS);
+        });
+    }
+
     public getActivities(): ActivityData[] {
         const elementRegistry: ElementRegistry = this.viewer.get<ElementRegistry>('elementRegistry');
 
@@ -306,9 +312,8 @@ class FlowsetBpmnViewer extends LitElement {
         const elementId: string = element.id;
 
         let isConfiguredActive = true; // an element is in manually set active elements
-        if (this.activeElements && this.activeElements.length > 0) {
+        if (this.activeElements) {
             isConfiguredActive = this.activeElements.indexOf(elementId) !== -1;
-
         }
 
         let isConfiguredDisabled = false; // an element is in manually set disabled elements

@@ -197,6 +197,17 @@ public class BpmnViewerFragment extends Fragment<Div> {
     }
 
     /**
+     * Removes the activity statistics for the specified process element.
+     *
+     * @param activityId the ID of the activity to remove statistics for
+     */
+    public void removeActivityStatistics(String activityId) {
+        if (this.bpmnViewer != null) {
+            this.bpmnViewer.removeActivityStatistics(activityId);
+        }
+    }
+
+    /**
      * Sets the clickable elements in the viewer.
      *
      * @param activeElements the list of clickable element IDs
