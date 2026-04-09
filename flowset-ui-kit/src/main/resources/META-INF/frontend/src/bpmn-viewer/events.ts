@@ -7,10 +7,14 @@ export class XmlImportCompleteEvent extends Event {
     public static readonly NAME = "xml-import-complete";
 
     public processDefinitionsJson: string;
+    public calledProcesses: unknown[];
+    public calledDecisions: unknown[];
 
-    public constructor(processDefinitionsJson: string) {
+    public constructor(processDefinitionsJson: string, calledProcesses: unknown[], calledDecisions: unknown[]) {
         super(XmlImportCompleteEvent.NAME);
         this.processDefinitionsJson = processDefinitionsJson;
+        this.calledProcesses = calledProcesses;
+        this.calledDecisions = calledDecisions;
     }
 }
 

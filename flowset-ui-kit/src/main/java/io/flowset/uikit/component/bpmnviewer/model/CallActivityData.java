@@ -5,16 +5,29 @@
 
 package io.flowset.uikit.component.bpmnviewer.model;
 
+import io.jmix.core.metamodel.annotation.JmixEntity;
+
 /**
  * Contains the values of the Call activity element attributes.
  */
+@JmixEntity
 public class CallActivityData {
+    protected String elementId;
+    protected String elementName;
     protected String calledElement;
     protected String binding;
     protected String versionTag;
     protected String version;
 
     public CallActivityData() {
+    }
+
+    public void setElementId(String elementId) {
+        this.elementId = elementId;
+    }
+
+    public void setElementName(String elementName) {
+        this.elementName = elementName;
     }
 
     public void setCalledElement(String calledElement) {
@@ -35,6 +48,14 @@ public class CallActivityData {
 
     public String getCalledElement() {
         return calledElement;
+    }
+
+    public String getElementId() {
+        return elementId;
+    }
+
+    public String getElementName() {
+        return elementName;
     }
 
     public String getBinding() {

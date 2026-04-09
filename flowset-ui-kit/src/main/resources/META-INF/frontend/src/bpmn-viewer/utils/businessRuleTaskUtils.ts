@@ -4,7 +4,7 @@
  */
 
 export const getDecisionRef = (element: any): string | undefined => {
-    const businessObject = element.businessObject;
+    const businessObject = element.businessObject || element;
     const camundaDecisionRef = businessObject.get('camunda:decisionRef');
     const operatonDecisionRef = businessObject.get('operaton:decisionRef');
 
@@ -12,7 +12,7 @@ export const getDecisionRef = (element: any): string | undefined => {
 }
 
 export const getDecisionBinding = (element: any): string | undefined => {
-    const businessObject = element.businessObject;
+    const businessObject = element.businessObject || element;
     const camundaBinding = businessObject.get('camunda:decisionRefBinding');
     const operatonBinding = businessObject.get('operaton:decisionRefBinding');
 
@@ -20,7 +20,7 @@ export const getDecisionBinding = (element: any): string | undefined => {
 }
 
 export const getDecisionVersion = (element: any): string | undefined => {
-    const businessObject = element.businessObject;
+    const businessObject = element.businessObject || element;
     const camundaVersion = businessObject.get('camunda:decisionRefVersion');
     const operatonVersion = businessObject.get('operaton:decisionRefVersion');
 
@@ -28,7 +28,7 @@ export const getDecisionVersion = (element: any): string | undefined => {
 }
 
 export const getDecisionVersionTag = (element: any): string | undefined => {
-    const businessObject = element.businessObject;
+    const businessObject = element.businessObject || element;
     const camundaVersionTag = businessObject.get('camunda:decisionRefVersionTag');
     const operatonVersionTag = businessObject.get('operaton:decisionRefVersionTag');
 

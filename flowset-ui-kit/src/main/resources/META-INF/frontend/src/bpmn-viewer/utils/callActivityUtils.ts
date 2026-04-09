@@ -5,12 +5,12 @@
 
 
 export const getCalledElement = (element: any): string | undefined => {
-    const businessObject = element.businessObject;
+    const businessObject = element.businessObject || element;
     return businessObject.get('calledElement');
 }
 
 export const getBinding = (element: any): string | undefined => {
-    const businessObject = element.businessObject;
+    const businessObject = element.businessObject || element;
     const camundaBinding = businessObject.get('camunda:calledElementBinding');
     const operatonBinding = businessObject.get('operaton:calledElementBinding');
 
@@ -18,7 +18,7 @@ export const getBinding = (element: any): string | undefined => {
 }
 
 export const getVersion = (element: any): string | undefined => {
-    const businessObject = element.businessObject;
+    const businessObject = element.businessObject || element;
     const camundaVersion = businessObject.get('camunda:calledElementVersion');
     const operatonVersion = businessObject.get('operaton:calledElementVersion');
 
@@ -26,7 +26,7 @@ export const getVersion = (element: any): string | undefined => {
 }
 
 export const getVersionTag = (element: any): string | undefined => {
-    const businessObject = element.businessObject;
+    const businessObject = element.businessObject || element;
     const camundaVersionTag = businessObject.get('camunda:calledElementVersionTag');
     const operatonVersionTag = businessObject.get('operaton:calledElementVersionTag');
 

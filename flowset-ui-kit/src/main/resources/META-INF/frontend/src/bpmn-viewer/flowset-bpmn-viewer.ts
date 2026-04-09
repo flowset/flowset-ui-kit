@@ -49,6 +49,7 @@ import {
     SendMessageOverlaysData
 } from "./overlay/types";
 import {findProcessDefinitions} from "./utils/findProcessDefinitions";
+import {BpmnElementDataExtractor} from "./element/BpmnElementDataExtractor";
 
 @customElement("flowset-bpmn-viewer")
 class FlowsetBpmnViewer extends LitElement {
@@ -65,9 +66,10 @@ class FlowsetBpmnViewer extends LitElement {
     private zoomScroll: ZoomScroll;
     private eventBus: EventBus;
     private overlayManager: OverlayManager;
+    private elementDataExtractor: BpmnElementDataExtractor;
     private viewerHolder: HTMLDivElement | undefined;
 
-    private processDefinitionsJson: string;
+    private processDefinitionsJson: string = "[]";
 
     private mode: string;
     private activeElements?: string[];
@@ -85,11 +87,15 @@ class FlowsetBpmnViewer extends LitElement {
         this.zoomScroll = this.viewer.get<ZoomScroll>("zoomScroll");
         this.eventBus = this.viewer.get<EventBus>("eventBus");
         this.overlayManager = new OverlayManager(this.viewer);
+        this.elementDataExtractor = new BpmnElementDataExtractor();
 
         this.viewer.on("import.parse.complete", (e: ImportParseCompleteEvent) => {
             const processDefinitions: BpmProcessDefinition[] = findProcessDefinitions(e);
             this.processDefinitionsJson = JSON.stringify(processDefinitions);
-            this.dispatchEvent(new XmlImportCompleteEvent(this.processDefinitionsJson));
+
+            const calledReferences = this.elementDataExtractor.getCalledReferences(e.elementsById);
+            this.dispatchEvent(new XmlImportCompleteEvent(this.processDefinitionsJson,
+                calledReferences.processes, calledReferences.decisions));
 
             this.resetZoom();
         });
