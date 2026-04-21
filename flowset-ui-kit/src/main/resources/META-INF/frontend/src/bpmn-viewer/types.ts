@@ -14,6 +14,24 @@ export interface BpmProcessDefinition {
     name?: string;
 }
 
+export interface CallActivityData {
+    elementId: string;
+    elementName?: string;
+    calledElement: string;
+    version?: string;
+    versionTag?: string;
+    binding?: string;
+}
+
+export interface BusinessRuleTaskData {
+    elementId: string;
+    elementName?: string;
+    decisionRef: string;
+    version?: string;
+    versionTag?: string;
+    binding?: string;
+}
+
 export interface SetElementColorCmd {
     elementId: string;
     fill: string;
