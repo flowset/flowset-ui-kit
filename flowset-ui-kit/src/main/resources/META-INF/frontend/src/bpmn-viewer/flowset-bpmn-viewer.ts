@@ -318,7 +318,7 @@ class FlowsetBpmnViewer extends LitElement {
         const elementId: string = element.id;
 
         let isConfiguredActive = true; // an element is in manually set active elements
-        if (this.activeElements) {
+        if (this.activeElements && this.activeElements.length > 0) {
             isConfiguredActive = this.activeElements.indexOf(elementId) !== -1;
         }
 
