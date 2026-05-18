@@ -55,7 +55,11 @@ import {BpmnElementDataExtractor} from "./element/BpmnElementDataExtractor";
 class FlowsetBpmnViewer extends LitElement {
     private readonly BPMN_VIEWER_HOLDER: string = "bpmnViewerHolder";
 
-    private readonly IGNORED_ACTIVITY_TYPES: string[] = ["bpmn:Participant", "bpmn:SequenceFlow", "bpmn:Collaboration", "bpmn:Process", "label"];
+    private readonly IGNORED_ACTIVITY_TYPES: string[] = ["bpmn:Participant", "bpmn:SequenceFlow",
+        "bpmn:Collaboration", "bpmn:Process", "label", "bpmn:TextAnnotation",
+        "bpmn:DataObjectReference", "bpmn:DataStoreReference",
+        "bpmn:Group"
+    ];
 
     private shadowRoot: any;
 
