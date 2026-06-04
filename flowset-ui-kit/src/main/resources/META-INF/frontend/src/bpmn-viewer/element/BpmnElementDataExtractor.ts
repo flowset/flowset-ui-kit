@@ -36,7 +36,7 @@ export class BpmnElementDataExtractor {
             if (type == 'bpmn:CallActivity') {
                 const calledElement = getCalledElement(element);
                 if (!calledElement) {
-                    return null;
+                    continue;
                 }
 
                 calledProcesses.push({
@@ -50,7 +50,7 @@ export class BpmnElementDataExtractor {
             } else if (type == 'bpmn:BusinessRuleTask') {
                 const decisionRef = getDecisionRef(element);
                 if (!decisionRef) {
-                    return null;
+                    continue;
                 }
 
                 calledDecisions.push({
