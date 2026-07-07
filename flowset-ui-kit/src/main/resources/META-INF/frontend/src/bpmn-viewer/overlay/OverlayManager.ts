@@ -17,7 +17,8 @@ import {
     OverlayPosition,
     OverlayType,
     SendMessageOverlaysData,
-    SendMessageOverlaysParams
+    SendMessageOverlaysParams,
+    VariableChangeOverlayCmd
 } from "./types";
 import {createDocumentationOverlay} from "./createDocumentationOverlay";
 import BpmnViewer from "../bpm/js/BpmnViewer";
@@ -42,6 +43,7 @@ import {
     getDecisionVersion,
     getDecisionVersionTag
 } from "../utils/businessRuleTaskUtils";
+import {createVariableChangeOverlay} from "./createVariableChangeOverlay";
 
 /**
  * OverlayManager class manages various overlays associated with BPMN diagram elements,
@@ -287,12 +289,38 @@ export class OverlayManager {
     }
 
     /**
+     * Adds an overlay with variable changes for the specified element.
+     * @param data overlay data
+     */
+    public showVariableChangeOverlay(data: VariableChangeOverlayCmd) {
+        this.removeOverlay(data.elementId, OverlayType.VARIABLE_CHANGE);
+
+        const element: ElementLike = this.elementRegistry.get(data.elementId);
+
+        const variableChangeOverlay = createVariableChangeOverlay({
+            shape: element,
+            changes: data.changes
+        });
+
+        this.overlays.add(data.elementId, OverlayType.VARIABLE_CHANGE, variableChangeOverlay);
+    }
+
+
+    /**
      * Removes an overlay with the specified type for the specified element.
      * @param activityId element identifier
      * @param overlayType overlay type
      */
     public removeOverlay(activityId: string, overlayType: string) {
         this.overlays.remove({element: activityId, type: overlayType});
+    }
+
+    /**
+     * Removes all overlays of the specified type.
+     * @param overlayType overlay type
+     */
+    public removeOverlays(overlayType: string) {
+        this.overlays.remove({type: overlayType});
     }
 
     /**
@@ -409,7 +437,7 @@ export class OverlayManager {
 
         const animationOverlayData = createAnimationOverlay(element);
 
-        const overlayId = this.overlays.add(elementId, animationOverlayData.overlayData);
+        const overlayId = this.overlays.add(elementId, OverlayType.HIGHLIGHT, animationOverlayData.overlayData);
 
         setTimeout(() => {
             animationOverlayData.animationContainer.classList.add('bpmn-animation-overlay-fadeout');

@@ -14,7 +14,26 @@ export enum OverlayType {
     ACTIVITY_STATISTICS = 'activity-statistics',
     INCIDENT_COUNT = 'incident-count',
     SEND_MESSAGE = 'send-message',
-    TRANSACTION_BOUNDARY = 'transaction-boundary'
+    TRANSACTION_BOUNDARY = 'transaction-boundary',
+    VARIABLE_CHANGE = 'variable-change',
+    HIGHLIGHT = 'highlight',
+}
+
+export interface VariableChangeOverlayCmd {
+    elementId: string;
+    changes: VariableChangeData[];
+}
+
+export interface VariableChangeData {
+    ordinalNumber: string;
+    tooltipMessage: string;
+    changeType: VariableChangeType;
+}
+
+export enum VariableChangeType {
+    CREATE = 'CREATE',
+    UPDATE = 'UPDATE',
+    DELETE = 'DELETE'
 }
 
 export interface IncidentOverlayData {
@@ -94,6 +113,7 @@ export interface DecisionLinkOverlaysData {
     visible?: boolean;
     tooltipMessage?: string;
 }
+
 export interface CalledProcessOverlaysParams {
     data: CalledProcessOverlaysData;
     handleClick: (element: any, callActivityData: JSON) => void;

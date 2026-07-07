@@ -45,12 +45,14 @@ export class BpmnElementClickEvent extends Event {
     public elementId: string;
     public elementType: string;
     public elementName: string | undefined;
+    public isMultiInstance: boolean | undefined;
 
-    public constructor(elementId: string, elementType: string, elementName?: string) {
+    public constructor(elementId: string, elementType: string, elementName?: string, isMultiInstance?: boolean) {
         super("bpmn-element-clicked");
         this.elementId = elementId;
         this.elementType = elementType;
         this.elementName = elementName;
+        this.isMultiInstance = isMultiInstance;
     }
 }
 
@@ -94,6 +96,18 @@ export class SendMessageOverlayClickEvent extends Event {
 
     public constructor(details: JSON) {
         super("send-message-overlay-clicked");
+        this.details = details;
+    }
+}
+
+export class ElementContextMenuEvent extends Event {
+    public details: JSON;
+
+    public constructor(details: JSON) {
+        super("bpmn-element-contextmenu", {
+            bubbles: true,
+            composed: true
+        });
         this.details = details;
     }
 }

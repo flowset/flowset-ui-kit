@@ -12,6 +12,7 @@ import ZoomScroll from 'diagram-js/lib/navigation/zoomscroll/ZoomScroll';
 import {
     ActivityData,
     AddMarkerCmd,
+    AutoZoomDirection,
     BpmProcessDefinition,
     RemoveMarkerCmd,
     ScrollToElementCmd,
@@ -24,7 +25,7 @@ import {
     CalledProcessOverlayClickEvent,
     DecisionInstanceLinkOverlayClickedEvent,
     DecisionLinkOverlayClickEvent,
-    DocumentationOverlayClickedEvent,
+    DocumentationOverlayClickedEvent, ElementContextMenuEvent,
     SendMessageOverlayClickEvent,
     XmlImportCompleteEvent
 } from "./events";
@@ -43,6 +44,7 @@ import {
     DecisionInstanceLinkOverlayData,
     DecisionLinkOverlaysData,
     DocumentationOverlayData,
+    VariableChangeOverlayCmd,
     IncidentOverlayData,
     NewActivityStatisticsOverlayData,
     OverlayType,
@@ -50,6 +52,9 @@ import {
 } from "./overlay/types";
 import {findProcessDefinitions} from "./utils/findProcessDefinitions";
 import {BpmnElementDataExtractor} from "./element/BpmnElementDataExtractor";
+import {createContextMenuEventData} from "./contextmenu/createContextMenuEventData";
+import {isMultiInstanceSupported} from "./utils/multiInstanceTaskUtils";
+import {getActivityData} from "./utils/elementMetadataUtils";
 
 @customElement("flowset-bpmn-viewer")
 class FlowsetBpmnViewer extends LitElement {
@@ -160,6 +165,35 @@ class FlowsetBpmnViewer extends LitElement {
         });
     }
 
+    public setContextMenuEnabled(enabled: boolean) {
+        if (enabled) {
+            this.viewer.on('element.contextmenu', (event: any) => {
+                const elementType = event.element.type;
+                if (elementType !== "bpmn:Process") { //TODO:
+                    event.originalEvent.preventDefault();
+                    const eventDetails = createContextMenuEventData(event);
+                    this.dispatchEvent(new ElementContextMenuEvent(eventDetails));
+                }
+            });
+        } else {
+            this.viewer.off('element.contextmenu');
+        }
+    }
+
+    public showVariableChangeOverlay(cmdJson: string) {
+        const cmd: VariableChangeOverlayCmd = JSON.parse(cmdJson);
+
+        this.awaitRun(() => {
+            this.overlayManager.showVariableChangeOverlay(cmd);
+        })
+    } to
+
+    public removeVariableChangeOverlays() {
+        this.awaitRun(() => {
+            this.overlayManager.removeOverlays(OverlayType.VARIABLE_CHANGE);
+        });
+    }
+
     public showCalledProcessOverlays(cmdJson: string) {
         const cmd: CalledProcessOverlaysData = JSON.parse(cmdJson);
 
@@ -209,17 +243,52 @@ class FlowsetBpmnViewer extends LitElement {
     public scrollToElement(cmdJson: string) {
         const data: ScrollToElementCmd = JSON.parse(cmdJson);
         this.awaitRun(() => {
+            const padding = {top: 20, right: 20, bottom: 20, left: 20};
 
-            this.canvas.scrollToElement(data.elementId, {
-                top: 20,
-                right: 20,
-                bottom: 20,
-                left: 20
-            });
+            if (data.autoZoom) {
+                this.scrollAndAutoZoom(data.elementId, padding, data.autoZoomDirection ?? AutoZoomDirection.CENTER);
+            } else {
+                this.canvas.scrollToElement(data.elementId, padding);
+            }
 
             if (data.useAnimation) {
                 this.overlayManager.addAnimationOverlay(data.elementId, data.durationInSec);
             }
+        });
+    }
+
+    private scrollAndAutoZoom(elementId: string,
+                              padding: { top: number; right: number; bottom: number; left: number },
+                              direction: AutoZoomDirection) {
+        const COMFORTABLE_ZOOM = 1.0;
+        const LEFT_PADDING_PX = 80;
+
+        const elementRegistry: ElementRegistry = this.viewer.get<ElementRegistry>('elementRegistry');
+        const element = elementRegistry.get(elementId) as Element | undefined;
+        if (!element) {
+            return;
+        }
+
+        const hasBounds = typeof element.width === 'number' && typeof element.height === 'number';
+        if (!hasBounds || this.canvas.zoom() >= COMFORTABLE_ZOOM) {
+            this.canvas.scrollToElement(elementId, padding);
+            return;
+        }
+
+        const outer = this.canvas.viewbox().outer;
+        const vbWidth = outer.width / COMFORTABLE_ZOOM;
+        const vbHeight = outer.height / COMFORTABLE_ZOOM;
+        const cy = element.y + element.height / 2;
+
+        const vbX = direction === AutoZoomDirection.LEFT
+            ? element.x - LEFT_PADDING_PX / COMFORTABLE_ZOOM
+            : element.x + element.width / 2 - vbWidth / 2;
+
+        this.canvas.viewbox({
+            x: vbX,
+            y: cy - vbHeight / 2,
+            width: vbWidth,
+            height: vbHeight,
         });
     }
 
@@ -288,6 +357,12 @@ class FlowsetBpmnViewer extends LitElement {
         });
     }
 
+    public getActivityById(activityId: string): ActivityData | undefined {
+        const elementRegistry: ElementRegistry = this.viewer.get<ElementRegistry>('elementRegistry');
+        const element = elementRegistry.get(activityId);
+        return getActivityData(element);
+    }
+
     public getActivities(): ActivityData[] {
         const elementRegistry: ElementRegistry = this.viewer.get<ElementRegistry>('elementRegistry');
 
@@ -296,11 +371,7 @@ class FlowsetBpmnViewer extends LitElement {
         });
 
         const activityList: ActivityData[] = allElements.map((e: Element) => {
-            return {
-                id: e.id,
-                name: e.businessObject.name,
-                type: e.type
-            } as ActivityData;
+            return getActivityData(e);
         });
 
         return activityList;
@@ -314,6 +385,26 @@ class FlowsetBpmnViewer extends LitElement {
             }
             this.overlayManager.showSendMessageOverlays({data: cmd, handleClick});
         });
+    }
+
+    private isContextMenuEnabledElement(element) {
+        const type: string = element.type;
+
+        const elementId: string = element.id;
+
+        let isConfiguredActive = true; // an element is in manually set active elements
+        if (this.activeElements && this.activeElements.length > 0) {
+            isConfiguredActive = this.activeElements.indexOf(elementId) !== -1;
+        }
+
+        let isConfiguredDisabled = false; // an element is in manually set disabled elements
+        if (this.disabledElements && this.disabledElements.length > 0) {
+            isConfiguredDisabled = this.disabledElements.indexOf(elementId) !== -1;
+        }
+
+        const ignoredByType = type &&  type !== 'bpmn:Process'; // element is ignored by type
+
+        return isConfiguredActive && !isConfiguredDisabled && !ignoredByType;
     }
 
     private isActiveElement(element) {
@@ -354,7 +445,8 @@ class FlowsetBpmnViewer extends LitElement {
         this.eventBus.on('element.click', (event: any) => {
             const elementActive = isElementActive(event.element);
             if (elementActive) {
-                this.dispatchEvent(new BpmnElementClickEvent(event.element.id, event.element.type, event.element.businessObject?.name));
+                this.dispatchEvent(new BpmnElementClickEvent(event.element.id, event.element.type,
+                    event.element.businessObject?.name, isMultiInstanceSupported(event.element)));
             }
         });
     }

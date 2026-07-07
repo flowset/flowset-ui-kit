@@ -23,15 +23,18 @@ public class ElementClickEvent extends ComponentEvent<BpmnViewer> {
     protected String elementId;
     protected String elementType;
     protected String elementName;
+    protected boolean isMultiInstance;
 
     public ElementClickEvent(BpmnViewer source, boolean fromClient,
                              @EventData("event.elementId") String elementId,
                              @EventData("event.elementType") String elementType,
-                             @EventData("event.elementName") String elementName) {
+                             @EventData("event.elementName") String elementName,
+                             @EventData("event.isMultiInstance") boolean isMultiInstance) {
         super(source, fromClient);
         this.elementId = elementId;
         this.elementType = elementType;
         this.elementName = elementName;
+        this.isMultiInstance = isMultiInstance;
     }
 
     public String getElementId() {
@@ -58,4 +61,13 @@ public class ElementClickEvent extends ComponentEvent<BpmnViewer> {
     public void setElementName(String elementName) {
         this.elementName = elementName;
     }
+
+    public boolean isMultiInstance() {
+        return isMultiInstance;
+    }
+
+    public void setMultiInstance(boolean isMultiInstance) {
+        this.isMultiInstance = isMultiInstance;
+    }
+
 }

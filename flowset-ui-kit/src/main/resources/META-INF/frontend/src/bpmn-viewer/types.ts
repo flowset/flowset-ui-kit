@@ -48,10 +48,17 @@ export interface RemoveMarkerCmd {
     marker: string;
 }
 
+export enum AutoZoomDirection {
+    CENTER = 'CENTER',
+    LEFT = 'LEFT'
+}
+
 export interface ScrollToElementCmd {
     elementId: string;
     useAnimation: boolean;
     durationInSec: number;
+    autoZoom?: boolean;
+    autoZoomDirection?: AutoZoomDirection;
 }
 
 export enum ViewerMode {

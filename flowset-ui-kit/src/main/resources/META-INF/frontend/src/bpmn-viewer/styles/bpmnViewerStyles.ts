@@ -22,7 +22,7 @@ export const bpmnViewerStyles = css`
         outline-offset: var(--bpmn-select-overlay-offset);
     }
 
-    .activity-hover:not(.djs-connection) .djs-visual  {
+    .activity-hover:not(.djs-connection) .djs-visual {
         cursor: pointer;
         outline: var(--bpmn-select-overlay-width) solid var(--bpmn-activity-hover-stroke-color) !important;
         border-radius: var(--bpmn-select-overlay-border-radius);
@@ -60,6 +60,62 @@ export const bpmnViewerStyles = css`
 
     .overlay-hidden {
         display: none;
+    }
+
+    .variable-change-overlay {
+        min-width: 1.5em;
+        height: 1.5em;
+        border-radius: 1em;
+        font-family: var(--lumo-font-family);
+        padding: var(--lumo-space-xs);
+        box-sizing: border-box;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.5em;
+        font-weight: 600;
+        font-size: var(--lumo-font-size-s);
+        border: 1px solid var(--lumo-contrast-20pct);
+    }
+
+    .variable-change-overlay-root {
+        display: flex;
+        justify-content: center;
+    }
+
+    .variable-change-create {
+        color: var(--lumo-success-text-color);
+        background-color: var(--lumo-success-color-10pct);
+        border-color: var(--lumo-success-color-50pct);
+    }
+
+    .variable-change-update {
+        color: var(--lumo-primary-text-color);
+        background-color: var(--lumo-primary-color-10pct);
+        border-color: var(--lumo-primary-color-50pct);
+    }
+
+    .variable-change-delete {
+        color: var(--lumo-error-text-color);
+        background-color: var(--lumo-error-color-10pct);
+        border-color: var(--lumo-error-color-50pct);
+    }
+
+    .variable-multiple-changes-overlay {
+        font-family: var(--lumo-font-family);
+        box-sizing: border-box;
+        width: auto;
+        min-width: 1.5em;
+        align-items: center;
+        padding: var(--lumo-space-xs);
+        padding-right: var(--lumo-space-s);
+    }
+
+    .variable-change-changes-icon {
+        width: 1.25em;
+        height: 1.25em;
+        flex-shrink: 0;
+        transform: scaleX(-1);
     }
 
     .incident-overlay {
@@ -138,9 +194,9 @@ export const bpmnViewerStyles = css`
         border-radius: var(--lumo-border-radius-m);
         border: var(--bpmn-group-overlay-border);
     }
-    
+
     .transaction-boundary-vertical-overlay {
-       background: var(--bpmn-async-transaction-overlay-vertical-background);
+        background: var(--bpmn-async-transaction-overlay-vertical-background);
     }
 
     .transaction-boundary-horizontal-overlay {
@@ -148,13 +204,13 @@ export const bpmnViewerStyles = css`
     }
 
     .transaction-boundary-vertical-overlay.engine-wait-state {
-       background:  var(--bpmn-engine-transaction-overlay-vertical-background);
+        background: var(--bpmn-engine-transaction-overlay-vertical-background);
     }
 
     .transaction-boundary-horizontal-overlay.engine-wait-state {
-       background: var(--bpmn-engine-transaction-boundary-overlay-horizontal-background);
+        background: var(--bpmn-engine-transaction-boundary-overlay-horizontal-background);
     }
-    
+
     .bpmn-animation-overlay-container {
         position: absolute;
         width: 100%;
@@ -198,7 +254,7 @@ export const bpmnViewerStyles = css`
     .bpmn-animation-overlay-fadeout {
         animation: fadeout 0.5s ease forwards !important;
     }
-    
+
     .bpmn-animation-overlay {
         position: absolute;
         border-radius: var(--bpmn-animation-overlay-border-radius);
