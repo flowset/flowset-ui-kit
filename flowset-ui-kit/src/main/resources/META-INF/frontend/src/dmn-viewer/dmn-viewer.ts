@@ -9,6 +9,8 @@ import {css, html, LitElement} from 'lit';
 import {customElement} from 'lit/decorators.js';
 // @ts-ignore
 import Viewer from "dmn-js/dist/dmn-viewer.development.js";
+// @ts-ignore
+import { migrateDiagram } from "@bpmn-io/dmn-migrate";
 
 // @ts-ignore
 import {dmnJsDecisionTableStyles} from './style/dmn-js-decision-table-style.js';
@@ -70,7 +72,12 @@ class FlowsetControlDmnViewer extends LitElement {
     }
 
     public async reloadSchema(xmlSchema: string, decisionDefinitionKey?: string) {
-        await this.viewer.importXML(xmlSchema);
+        const normalizedXml = xmlSchema.replace(
+            'xmlns="http://www.omg.org/spec/DMN/20151101"',
+            'xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"'
+        );
+        const migratedXml = await migrateDiagram(normalizedXml);
+        await this.viewer.importXML(migratedXml);
         const dmnViewerHolder = this.shadowRoot.getElementById(this.DMN_VIEWER_HOLDER)!
         if (decisionDefinitionKey) {
             dmnViewerHolder.classList.add('no-drd-button');
@@ -99,22 +106,39 @@ class FlowsetControlDmnViewer extends LitElement {
         const decisionInstance = JSON.parse(decisionInstanceJson);
 
         if (decisionInstance && decisionInstance.outputDataList) {
+            const container = this.viewer._container;
             decisionInstance.outputDataList.forEach((outputData: any) => {
-                const allDecisionCells = this.viewer._container.querySelectorAll(
-                    'td.cell[data-row-id="' + outputData.dataRowId + '"],' +
-                    ' [data-element-id="' + outputData.dataRowId + '"]');
+                const colId = outputData.dataColId;
+                const rowId = outputData.dataRowId;
+
+                // find row by cell id if row id is empty
+                let outputCell: HTMLElement | null = null;
+                if (colId) {
+                    const colSelector = rowId
+                        ? '[data-row-id="' + rowId + '"][data-col-id="' + colId + '"]'
+                        : '[data-col-id="' + colId + '"]';
+                    outputCell = container.querySelector(colSelector)
+                        || container.querySelector('[data-element-id="' + colId + '"]');
+                }
+
+                const effectiveRowId = rowId || (outputCell ? outputCell.dataset.rowId : null);
+                if (!effectiveRowId) {
+                    console.debug('DMN viewer: no row anchor for outputData', outputData);
+                    return;
+                }
+
+                const allDecisionCells = container.querySelectorAll(
+                    'td.cell[data-row-id="' + effectiveRowId + '"],' +
+                    ' [data-element-id="' + effectiveRowId + '"]');
                 allDecisionCells.forEach((cell: any) => {
                     cell.style.background = '#e0f2fb';
                 });
 
-                const outputCells = this.viewer._container.querySelectorAll(
-                    '[data-row-id="' + outputData.dataRowId + '"]' +
-                    '[data-col-id="' + outputData.dataColId + '"]');
-                if (outputCells.length > 0) {
+                if (outputCell) {
                     const span = document.createElement('span');
                     span.textContent = ' = ' + outputData.value;
                     span.style.fontWeight = '700';
-                    outputCells[0].appendChild(span);
+                    outputCell.appendChild(span);
                 }
             });
         }

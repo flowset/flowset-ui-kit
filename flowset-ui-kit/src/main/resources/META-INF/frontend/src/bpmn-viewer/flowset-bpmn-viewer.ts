@@ -83,6 +83,9 @@ class FlowsetBpmnViewer extends LitElement {
     private mode: string;
     private activeElements?: string[];
     private disabledElements?: string[];
+    // Engine type of the parent process (e.g. "CAMUNDA_7", "OPERATON", "JMIX_BPM_3").
+    // Controls which BPMN shape carries the DMN reference. Unset => Camunda/Operaton behavior.
+    private engineType?: string;
 
     static get styles() {
         return bpmnViewerStyles;
@@ -102,7 +105,7 @@ class FlowsetBpmnViewer extends LitElement {
             const processDefinitions: BpmProcessDefinition[] = findProcessDefinitions(e);
             this.processDefinitionsJson = JSON.stringify(processDefinitions);
 
-            const calledReferences = this.elementDataExtractor.getCalledReferences(e.elementsById);
+            const calledReferences = this.elementDataExtractor.getCalledReferences(e.elementsById, this.engineType);
             this.dispatchEvent(new XmlImportCompleteEvent(this.processDefinitionsJson,
                 calledReferences.processes, calledReferences.decisions));
 
@@ -161,7 +164,7 @@ class FlowsetBpmnViewer extends LitElement {
             const handleOverlayClick = (decisionInstanceId: string) => {
                 this.dispatchEvent(new DecisionInstanceLinkOverlayClickedEvent(decisionInstanceId));
             };
-            this.overlayManager.showDecisionInstanceLinkOverlay({data: cmd, handleClick: handleOverlayClick})
+            this.overlayManager.showDecisionInstanceLinkOverlay({data: cmd, handleClick: handleOverlayClick, engineType: this.engineType})
         });
     }
 
@@ -212,7 +215,7 @@ class FlowsetBpmnViewer extends LitElement {
             const handleOverlayClick = (element: ElementLike, businessRuleTaskData: JSON) => {
                 this.dispatchEvent(new DecisionLinkOverlayClickEvent(element.id, businessRuleTaskData));
             }
-            this.overlayManager.showDecisionLinkOverlays({data: cmd, handleClick: handleOverlayClick});
+            this.overlayManager.showDecisionLinkOverlays({data: cmd, handleClick: handleOverlayClick, engineType: this.engineType});
         });
     }
 
@@ -319,6 +322,10 @@ class FlowsetBpmnViewer extends LitElement {
                 y: this.viewerHolder.offsetHeight / 2
             });
         });
+    }
+
+    public setEngineType(engineType?: string) {
+        this.engineType = engineType || undefined;
     }
 
     public setMode(mode?: string) {

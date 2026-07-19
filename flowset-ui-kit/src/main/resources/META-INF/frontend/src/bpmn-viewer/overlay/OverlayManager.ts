@@ -27,7 +27,7 @@ import Canvas from 'diagram-js/lib/core/Canvas';
 import {createNavigationOverlay} from "./createNavigationOverlay";
 import {getMessage, isMessageSupported} from "../utils/eventDefinitionUtils";
 import {createSendMessageOverlay} from "./createSendMessageOverlay";
-import {getBinding, getCalledElement, getVersion, getVersionTag} from "../utils/callActivityUtils";
+import {getBinding, getCalledElement, getFlowableCalledElementType, getVersion, getVersionTag} from "../utils/callActivityUtils";
 import {ElementLike} from "diagram-js/lib/model/Types";
 import {findElementDocumentation} from "../utils/documentationUtils";
 import {createActivityStatisticsOverlay} from "./createActivityStatisticsOverlay";
@@ -41,7 +41,8 @@ import {
     getDecisionBinding,
     getDecisionRef,
     getDecisionVersion,
-    getDecisionVersionTag
+    getDecisionVersionTag,
+    isFlowableDmnTask
 } from "../utils/businessRuleTaskUtils";
 import {createVariableChangeOverlay} from "./createVariableChangeOverlay";
 
@@ -125,10 +126,17 @@ export class OverlayManager {
      * Adds an overlay to navigate to the called decision instance from the Business Rule Task element.
      * @param data overlay data
      * @param handleClick overlay click handler
+     * @param engineType  engine type
      */
-    public showDecisionInstanceLinkOverlay({data, handleClick}: DecisionInstanceLinkOverlayParams) {
+    public showDecisionInstanceLinkOverlay({data, handleClick, engineType}: DecisionInstanceLinkOverlayParams) {
         const element = this.elementRegistry.find((element) => {
-            return element.type == "bpmn:BusinessRuleTask" && element.id == data.activityId
+            if (element.id != data.activityId) {
+                return false;
+            }
+            if (engineType === 'JMIX_BPM_3') {
+                return isFlowableDmnTask(element);
+            }
+            return element.type == "bpmn:BusinessRuleTask";
         });
 
         if (element) {
@@ -235,35 +243,46 @@ export class OverlayManager {
         }
     }
 
-    public showDecisionLinkOverlays({data, handleClick}: DecisionLinkOverlaysParams) {
+    public showDecisionLinkOverlays({data, handleClick, engineType}: DecisionLinkOverlaysParams) {
         this.overlays.remove({type: OverlayType.DECISION});
 
-        if (data.visible) {
-            const elements: ElementLike[] = this.elementRegistry.filter(element => element.type == "bpmn:BusinessRuleTask");
-            elements.forEach((element: ElementLike) => {
-                const decisionRef = getDecisionRef(element);
-                if (decisionRef && decisionRef.length > 0) {
-                    const handleOverlayClick = () => {
-                        const businessRuleTaskData = <JSON><unknown>{
-                            "decisionRef": decisionRef,
-                            "version": getDecisionVersion(element),
-                            "versionTag": getDecisionVersionTag(element),
-                            "binding": getDecisionBinding(element),
-                        };
-
-                        handleClick(element, businessRuleTaskData);
-                    }
-
-                    const tooltipMessage = `${data.tooltipMessage} (${decisionRef})`;
-                    const decisionOverlay = createNavigationOverlay({
-                        title: tooltipMessage,
-                        handleClick: handleOverlayClick
-                    });
-
-                    this.overlays.add(element.id, OverlayType.DECISION, decisionOverlay);
-                }
-            });
+        if (!data.visible) {
+            return;
         }
+
+        const isFlowable8 = engineType === 'JMIX_BPM_3';
+
+        const elements: ElementLike[] = this.elementRegistry.filter(element => {
+            if (isFlowable8) {
+                return isFlowableDmnTask(element);
+            }
+            return element.type == "bpmn:BusinessRuleTask";
+        });
+
+        elements.forEach((element: ElementLike) => {
+            const decisionRef = getDecisionRef(element);
+            if (!decisionRef || decisionRef.length === 0) {
+                return;
+            }
+            const handleOverlayClick = () => {
+                const businessRuleTaskData = <JSON><unknown>({
+                    "decisionRef": decisionRef,
+                    "version": getDecisionVersion(element),
+                    "versionTag": getDecisionVersionTag(element),
+                    "binding": getDecisionBinding(element),
+                });
+
+                handleClick(element, businessRuleTaskData);
+            }
+
+            const tooltipMessage = `${data.tooltipMessage} (${decisionRef})`;
+            const decisionOverlay = createNavigationOverlay({
+                title: tooltipMessage,
+                handleClick: handleOverlayClick
+            });
+
+            this.overlays.add(element.id, OverlayType.DECISION, decisionOverlay);
+        });
     }
 
     /**
@@ -334,7 +353,7 @@ export class OverlayManager {
         });
 
         elements.forEach((shape: ElementLike) => {
-            const transactionBoundary: ElementTransactionBoundary = getElementTransactionBoundary(shape);
+            const transactionBoundary: ElementTransactionBoundary | undefined = getElementTransactionBoundary(shape);
 
             if (!transactionBoundary) {
                 return;

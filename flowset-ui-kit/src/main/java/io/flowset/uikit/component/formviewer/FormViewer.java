@@ -10,6 +10,7 @@ import elemental.json.JsonValue;
 @Tag("flowset-control-form-viewer")
 @NpmPackage(value = "@bpmn-io/form-js", version = "1.15.0")
 @NpmPackage(value = "@bpmn-io/form-js-viewer", version = "1.15.0")
+@NpmPackage(value = "@bpmn-io/form-js-playground", version = "1.15.0")
 @JsModule("./src/form-viewer/form-viewer.ts")
 public class FormViewer extends Component {
 

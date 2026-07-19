@@ -10,6 +10,19 @@ export const isMultiInstanceSupported = (element: ElementLike): boolean => {
     return !!loopCharacteristics && is(loopCharacteristics, 'bpmn:MultiInstanceLoopCharacteristics');
 }
 
+export const getMultiInstanceType = (element: ElementLike): string | undefined => {
+    const loopCharacteristics = getLoopCharacteristics(element);
+    if (!loopCharacteristics) {
+        return undefined;
+    }
+    const sequential = loopCharacteristics.get('isSequential');
+    console.log("sequential: ", sequential);
+    if (sequential === 'true' || sequential === true) {
+        return 'sequential';
+    }
+    return 'parallel';
+}
+
 function getLoopCharacteristics(element) {
     const bo = getBusinessObject(element);
     return bo.loopCharacteristics;

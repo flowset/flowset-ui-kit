@@ -5,12 +5,14 @@
 
 import {getBusinessObject} from "bpmn-js/lib/util/ModelUtil";
 import {BusinessRuleTaskData, CallActivityData} from "../types";
-import {getBinding, getCalledElement, getVersion, getVersionTag} from "../utils/callActivityUtils";
+import {getBinding, getCalledElement, getFlowableCalledElementType, getVersion, getVersionTag} from "../utils/callActivityUtils";
 import {
     getDecisionBinding,
     getDecisionRef,
     getDecisionVersion,
-    getDecisionVersionTag
+    getDecisionVersionTag,
+    getFlowableDecisionRef,
+    isFlowableDmnTask
 } from "../utils/businessRuleTaskUtils";
 import {ModdleElementsById} from "bpmn-js/lib/BaseViewer";
 
@@ -24,10 +26,13 @@ export class BpmnElementDataExtractor {
     /**
      * Extracts called processes and decision tables from the Call Activity and Business Rule Tasks from the provided elements.
      * @param elementsById diagram elements from the imported BPMN 2.0 XML
+     * @param engineType   optional engine type ("JMIX_BPM_3" enables the Flowable Decision Task shape).
      */
-    public getCalledReferences(elementsById: ModdleElementsById): CalledReferences {
+    public getCalledReferences(elementsById: ModdleElementsById, engineType?: string): CalledReferences {
         const calledProcesses: CallActivityData[] = [];
         const calledDecisions: BusinessRuleTaskData[] = [];
+
+        const isJmixBpm = engineType === 'JMIX_BPM_3';
 
         for (const key of Object.keys(elementsById)) {
             const element = elementsById[key];
@@ -47,7 +52,19 @@ export class BpmnElementDataExtractor {
                     versionTag: getVersionTag(element),
                     binding: getBinding(element)
                 });
-            } else if (type == 'bpmn:BusinessRuleTask') {
+            } else if (isJmixBpm && isFlowableDmnTask(element)) {
+                const decisionRef = getFlowableDecisionRef(element);
+                if (!decisionRef) {
+                    console.warn('Decision ref not found for element', element);
+                    continue;
+                }
+                calledDecisions.push({
+                    elementId: element.id,
+                    elementName: getBusinessObject(element)?.name,
+                    decisionRef: decisionRef,
+                    binding: undefined,
+                });
+            } else if (!isJmixBpm && type == 'bpmn:BusinessRuleTask') {
                 const decisionRef = getDecisionRef(element);
                 if (!decisionRef) {
                     continue;

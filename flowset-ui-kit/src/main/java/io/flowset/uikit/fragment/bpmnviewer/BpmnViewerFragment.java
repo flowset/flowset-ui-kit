@@ -57,6 +57,7 @@ public class BpmnViewerFragment extends Fragment<Div> {
     protected boolean noBorders;
     protected boolean showDocumentation;
     protected ViewerMode mode;
+    protected String engineType;
     protected BpmnViewer bpmnViewer;
 
     @Subscribe(target = Target.HOST_CONTROLLER)
@@ -128,12 +129,30 @@ public class BpmnViewerFragment extends Fragment<Div> {
     }
 
     /**
+     * Sets the engine type of the parent process. Forwarded to
+     * {@link BpmnViewer#setEngineType(String)} when the viewer is initialized.
+     *
+     * @param engineType engine type identifier (typically {@code EngineType.getId()})
+     */
+    public void setEngineType(String engineType) {
+        this.engineType = engineType;
+        if (bpmnViewer != null) {
+            bpmnViewer.setEngineType(engineType);
+        }
+    }
+
+    public String getEngineType() {
+        return engineType;
+    }
+
+    /**
      * Initializes the BPMN viewer with the specified XML.
      *
      * @param bpmnXml the BPMN XML to initialize the viewer with
      */
     public void initViewer(String bpmnXml) {
         this.bpmnViewer = createBpmnViewer();
+        this.bpmnViewer.setEngineType(engineType);
         this.bpmnViewer.setBpmnXml(bpmnXml);
         this.bpmnViewer.setMode(mode);
 

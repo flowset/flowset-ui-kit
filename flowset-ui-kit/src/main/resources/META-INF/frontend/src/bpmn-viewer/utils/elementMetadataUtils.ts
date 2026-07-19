@@ -1,5 +1,5 @@
 import {getBusinessObject} from "bpmn-js/lib/util/ModelUtil";
-import {isMultiInstanceSupported} from "./multiInstanceTaskUtils";
+import {getMultiInstanceType, isMultiInstanceSupported} from "./multiInstanceTaskUtils";
 import {ElementLike} from "diagram-js/lib/model/Types";
 import {ActivityData} from "../types";
 
@@ -42,7 +42,9 @@ export const getActivityData = (element?: ElementLike): ActivityData | undefined
     return {
         id: element.id,
         name: businessObject.name,
-        type: element.type
+        type: element.type,
+        isMultiInstance: isMultiInstanceSupported(element),
+        multiInstanceType: getMultiInstanceType(element),
     } as ActivityData
 
 };

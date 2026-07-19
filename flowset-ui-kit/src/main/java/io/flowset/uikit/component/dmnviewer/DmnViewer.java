@@ -16,6 +16,7 @@ import io.flowset.uikit.component.dmnviewer.event.DmnXmlImportCompleteEvent;
 
 @Tag("flowset-control-dmn-viewer")
 @NpmPackage(value = "dmn-js", version = "17.2.0")
+@NpmPackage(value = "@bpmn-io/dmn-migrate", version = "0.6.0")
 @CssImport("dmn-js/dist/assets/dmn-font/css/dmn-embedded.css")
 @JsModule("./src/dmn-viewer/dmn-viewer.ts")
 public class DmnViewer extends Component {

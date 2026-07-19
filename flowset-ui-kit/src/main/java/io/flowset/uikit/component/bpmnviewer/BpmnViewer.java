@@ -58,6 +58,8 @@ public class BpmnViewer extends Component implements HasElement, ApplicationCont
     protected Messages messages;
     protected ViewerMode mode;
 
+
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
@@ -217,6 +219,16 @@ public class BpmnViewer extends Component implements HasElement, ApplicationCont
     }
 
     /**
+     * Sets the engine type
+     *
+     * @param engineType engine type identifier
+     */
+    public void setEngineType(@Nullable String engineType) {
+        getElement().callJsFunction("setEngineType", engineType);
+    }
+
+
+    /**
      * Shows the "send message" overlays for the events on the BPMN diagram depending on the specified data.
      *
      * @param cmd command data
@@ -334,6 +346,8 @@ public class BpmnViewer extends Component implements HasElement, ApplicationCont
 
         return completableFuture;
     }
+
+
 
     /**
      * Adds an overlay with the specified count of running instances and incidents for the specified diagram element.

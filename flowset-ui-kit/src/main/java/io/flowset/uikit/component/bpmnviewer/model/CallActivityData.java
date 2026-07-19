@@ -14,6 +14,10 @@ import io.jmix.core.metamodel.annotation.JmixEntity;
 public class CallActivityData {
     protected String elementId;
     protected String elementName;
+    /**
+     * When {@link #binding} is {@code "id"}, this value is a process definition id;
+     * otherwise it is a process definition key.
+     */
     protected String calledElement;
     protected String binding;
     protected String versionTag;

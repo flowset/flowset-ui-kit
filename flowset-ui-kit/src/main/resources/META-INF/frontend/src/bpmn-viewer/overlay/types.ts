@@ -51,6 +51,11 @@ export interface DecisionInstanceLinkOverlayData {
 export interface DecisionInstanceLinkOverlayParams {
     data: DecisionInstanceLinkOverlayData;
     handleClick: (decisionInstanceId: string) => void;
+    // Engine type of the parent process. When "JMIX_BPM_3" the DMN
+    // instance-link overlay is placed on Flowable Decision Tasks
+    // (bpmn:ServiceTask flowable:type="dmn"); otherwise it is placed on
+    // bpmn:BusinessRuleTask elements.
+    engineType?: string;
 }
 
 export interface NewActivityStatisticsOverlayData {
@@ -122,5 +127,9 @@ export interface CalledProcessOverlaysParams {
 export interface DecisionLinkOverlaysParams {
     data: DecisionLinkOverlaysData;
     handleClick: (element: any, businessRuleTaskData: JSON) => void;
+    // Engine type of the parent process. When "JMIX_BPM_3" the DMN link
+    // overlay is placed on Flowable Decision Tasks (bpmn:ServiceTask flowable:type="dmn");
+    // otherwise it is placed on bpmn:BusinessRuleTask elements.
+    engineType?: string;
 }
 
