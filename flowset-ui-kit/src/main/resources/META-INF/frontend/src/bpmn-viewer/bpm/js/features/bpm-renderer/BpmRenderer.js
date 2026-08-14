@@ -5,7 +5,7 @@
 
 import BaseRenderer from 'diagram-js/lib/draw/BaseRenderer';
 
-import inherits from 'inherits';
+import inherits from 'inherits-browser';
 
 import {isAny} from 'bpmn-js/lib/features/modeling/util/ModelingUtil';
 

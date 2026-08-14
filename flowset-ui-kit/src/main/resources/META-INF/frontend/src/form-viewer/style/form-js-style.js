@@ -37,7 +37,7 @@ export const formViewerStyles = css`
    * Specify color variables in the following schema:
    * 1 - use specified layer
    * 2 - use layer one
-   * 3 - use fallback
+   * 3 - use fallback 
    */
         --color-background: var(--cds-field, var(--cds-field-01, var(--color-white)));
         --color-background-disabled: var(--cds-background, var(--color-grey-225-10-95));
@@ -60,6 +60,7 @@ export const formViewerStyles = css`
         --color-borders: var(--cds-border-strong, var(--cds-border-strong-01, var(--color-grey-225-10-55)));
         --color-borders-group: var(--cds-border-subtle, var(--color-grey-225-10-85));
         --color-borders-table: var(--color-borders-group);
+        --color-borders-documentPreview: var(--cds-border-subtle, var(--color-grey-225-10-85));
         --color-borders-disabled: var(--cds-border-disabled, var(--color-grey-225-10-75));
         --color-borders-adornment: var(--cds-border-subtle, var(--cds-border-subtle-01, var(--color-grey-225-10-85)));
         --color-borders-readonly: var(--cds-border-subtle, var(--color-grey-225-10-75));
@@ -71,7 +72,7 @@ export const formViewerStyles = css`
         --color-accent-readonly: var(--cds-border-strong, var(--cds-border-strong-01, var(--color-grey-225-10-55)));
         --color-datepicker-focused-day: var(--cds-button-primary, var(--color-grey-225-10-55));
         --color-shadow: var(--cds-shadow, var(--color-grey-225-10-85));
-        --font-family: "IBM Plex Sans", sans-serif;
+        --font-family: 'IBM Plex Sans', sans-serif;
         --font-size-group: 15px;
         --font-size-base: 14px;
         --font-size-input: 14px;
@@ -273,6 +274,11 @@ export const formViewerStyles = css`
         opacity: 1;
     }
 
+    .fjs-container .fjs-inline-label {
+        align-items: center;
+        display: flex;
+    }
+
     .fjs-container .fjs-form-field-label {
         display: flex;
         align-items: center;
@@ -422,6 +428,7 @@ export const formViewerStyles = css`
     .fjs-container .fjs-input[type=tel],
     .fjs-container .fjs-input[type=number],
     .fjs-container .fjs-button[type=submit],
+    .fjs-container .fjs-button[type=button],
     .fjs-container .fjs-button[type=reset],
     .fjs-container .fjs-textarea,
     .fjs-container .fjs-select {
@@ -597,7 +604,8 @@ export const formViewerStyles = css`
         margin: 6px 10px 6px 4px;
     }
 
-    .fjs-container .fjs-button[type=submit] {
+    .fjs-container .fjs-button[type=submit],
+    .fjs-container .fjs-button[type=button] {
         color: var(--cds-text-inverse, var(--color-white));
         background-color: var(--color-accent);
         border-color: var(--color-accent);
@@ -610,12 +618,14 @@ export const formViewerStyles = css`
     }
 
     .fjs-container .fjs-button[type=submit],
+    .fjs-container .fjs-button[type=button],
     .fjs-container .fjs-button[type=reset] {
         min-width: 100px;
         width: auto;
     }
 
-    .fjs-container .fjs-button[type=submit] {
+    .fjs-container .fjs-button[type=submit],
+    .fjs-container .fjs-button[type=button] {
         font-weight: 600;
     }
 
@@ -626,6 +636,7 @@ export const formViewerStyles = css`
     .fjs-container .fjs-input[type=tel]:focus,
     .fjs-container .fjs-input[type=number]:focus,
     .fjs-container .fjs-button[type=submit]:focus,
+    .fjs-container .fjs-button[type=button]:focus,
     .fjs-container .fjs-button[type=reset]:focus,
     .fjs-container .fjs-textarea:focus,
     .fjs-container .fjs-select:focus {
@@ -642,7 +653,8 @@ export const formViewerStyles = css`
         outline: none;
     }
 
-    .fjs-container .fjs-button[type=submit]:focus {
+    .fjs-container .fjs-button[type=submit]:focus,
+    .fjs-container .fjs-button[type=button]:focus {
         border-color: var(--color-accent);
     }
 
@@ -685,6 +697,7 @@ export const formViewerStyles = css`
     }
 
     .fjs-container .fjs-button[type=submit]:disabled,
+    .fjs-container .fjs-button[type=button]:disabled,
     .fjs-container .fjs-button[type=reset]:disabled {
         color: var(--cds-text-on-color-disabled, var(--color-text-light));
         background-color: var(--color-background-disabled);
@@ -692,6 +705,7 @@ export const formViewerStyles = css`
     }
 
     .fjs-container .fjs-button[type=submit]:read-only,
+    .fjs-container .fjs-button[type=button]:read-only,
     .fjs-container .fjs-button[type=reset]:read-only {
         color: var(--text-light);
         background-color: var(--color-background-readonly);
@@ -976,7 +990,8 @@ export const formViewerStyles = css`
     }
 
     .fjs-container .fjs-image-placeholder,
-    .fjs-container .fjs-iframe-placeholder {
+    .fjs-container .fjs-iframe-placeholder,
+    .fjs-container .fjs-documentPreview-placeholder {
         margin: 4px 0;
         width: 100%;
         height: 90px;
@@ -986,12 +1001,14 @@ export const formViewerStyles = css`
         color: var(--color-text-light);
     }
 
-    .fjs-container .fjs-iframe-placeholder {
+    .fjs-container .fjs-iframe-placeholder,
+    .fjs-container .fjs-documentPreview-placeholder {
         border: 1px solid var(--color-borders-readonly);
     }
 
     .fjs-container .fjs-image-placeholder .fjs-image-placeholder-inner,
-    .fjs-container .fjs-iframe-placeholder .fjs-iframe-placeholder-text {
+    .fjs-container .fjs-iframe-placeholder .fjs-iframe-placeholder-text,
+    .fjs-container .fjs-documentPreview-placeholder .fjs-documentPreview-placeholder-text {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -999,7 +1016,8 @@ export const formViewerStyles = css`
         overflow: hidden;
     }
 
-    .fjs-container .fjs-iframe-placeholder .fjs-iframe-placeholder-text {
+    .fjs-container .fjs-iframe-placeholder .fjs-iframe-placeholder-text,
+    .fjs-container .fjs-documentPreview-placeholder .fjs-documentPreview-placeholder-text {
         font-size: var(--font-size-label);
     }
 
@@ -1104,6 +1122,78 @@ export const formViewerStyles = css`
     .fjs-container .fjs-table-sort-icon-asc,
     .fjs-container .fjs-table-sort-icon-desc {
         width: 16px;
+    }
+
+    .fjs-container .fjs-documentPreview-document-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .fjs-container .fjs-documentPreview-single-document-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--color-borders-documentPreview);
+        border-radius: 3px;
+
+        .fjs-form-field-error {
+            align-self: flex-start;
+        }
+    }
+
+    .fjs-container .fjs-documentPreview-non-preview-item {
+        flex-direction: row;
+    }
+
+    .fjs-container .fjs-documentPreview-single-document-container:not(.fjs-documentPreview-non-preview-item) {
+        position: relative;
+        overflow-y: auto;
+    }
+
+    .fjs-container .fjs-documentPreview-single-document-container:not(.fjs-documentPreview-non-preview-item) .fjs-documentPreview-download-button {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        z-index: 1;
+    }
+
+    .fjs-container .fjs-documentPreview-pdf-viewer {
+        all: unset;
+        width: 100%;
+        min-height: 400px;
+    }
+
+    .fjs-container .fjs-documentPreview-download-button {
+        width: 24px;
+        height: 24px;
+        box-sizing: border-box;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 3px;
+        border: 1px solid var(--color-borders-documentPreview);
+        background: var(--color-layer);
+        padding: 0;
+
+        svg {
+            color: var(--color-text);
+        }
+
+        svg:focus {
+            outline: none;
+        }
+    }
+
+    .fjs-container .fjs-documentPreview-non-preview-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px;
+        color: var(--color-text-light);
     }
 
     .fjs-container .fjs-repeat-row-container {
@@ -1238,6 +1328,17 @@ export const formViewerStyles = css`
 
     .fjs-container .flatpickr-calendar {
         width: 326px;
+    }
+
+    .fjs-hidden {
+        display: none;
+    }
+
+    .fjs-container .fjs-filepicker-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
     }
 
     .cds--grid {
@@ -3350,7 +3451,7 @@ export const formViewerStyles = css`
 
     .flatpickr-current-month .numInputWrapper {
         width: 6ch;
-        width: 7ch \\0;
+        width: 7ch\\0 ;
         display: inline-block;
     }
 

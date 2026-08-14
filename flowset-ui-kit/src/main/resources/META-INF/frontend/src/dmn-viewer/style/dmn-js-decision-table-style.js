@@ -349,7 +349,7 @@ export const dmnJsDecisionTableStyles = css`
         overflow: hidden;
         text-overflow: ellipsis;
         -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
+        -webkit-box-orient: vertical; /* stylelint-disable-line property-no-deprecated */
     }
 
     .dmn-decision-table-container thead .input-expression:empty::before {

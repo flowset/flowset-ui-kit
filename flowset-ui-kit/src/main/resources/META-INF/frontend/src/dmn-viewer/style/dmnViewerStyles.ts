@@ -9,4 +9,8 @@ export const dmnViewerStyles = css`
    .no-drd-button .view-drd {
        display: none;
    }
+    
+   .djs-container > svg:focus {
+       outline: none;
+   }
 `;

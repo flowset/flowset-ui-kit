@@ -39,7 +39,7 @@ import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 @Tag("flowset-bpmn-viewer")
-@NpmPackage(value = "bpmn-js", version = "17.11.1")
+@NpmPackage(value = "bpmn-js", version = "18.24.0")
 @CssImport("bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css")
 @CssImport("bpmn-js/dist/assets/bpmn-js.css")
 @CssImport("bpmn-js/dist/assets/diagram-js.css")
