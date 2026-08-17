@@ -4,7 +4,7 @@
  */
 
 import Viewer from 'bpmn-js/lib/Viewer';
-import inherits from 'inherits';
+import inherits from 'inherits-browser';
 
 import KeyboardMoveModule from 'diagram-js/lib/navigation/keyboard-move';
 import MoveCanvasModule from 'diagram-js/lib/navigation/movecanvas';

@@ -98,4 +98,16 @@ export const dmnJsDrdStyles = css`
   left: 130px;
 }
 
+.djs-overlay {
+  & .dms-type-ref-dropdown {
+    display: block;
+  }
+
+  & .dms-type-ref-select {
+    background-color: var(--color-white);
+    border: 1px solid var(--input-border-color);
+    width: 125px;
+    border-radius: 12px;
+  }
+}
 `;

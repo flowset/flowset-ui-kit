@@ -6,6 +6,10 @@
 import {css} from 'lit';
 
 export const bpmnViewerStyles = css`
+    .djs-container > svg:focus {
+        outline: none;
+    }
+
     .running-activity:not(.djs-connection) .djs-visual > :nth-child(1) {
         fill: var(--bpmn-running-activity-color) !important;
     }

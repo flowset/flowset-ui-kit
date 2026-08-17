@@ -189,7 +189,7 @@ class FlowsetBpmnViewer extends LitElement {
         this.awaitRun(() => {
             this.overlayManager.showVariableChangeOverlay(cmd);
         })
-    } to
+    }
 
     public removeVariableChangeOverlays() {
         this.awaitRun(() => {
