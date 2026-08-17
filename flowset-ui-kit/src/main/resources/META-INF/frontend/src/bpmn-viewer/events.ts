@@ -9,12 +9,15 @@ export class XmlImportCompleteEvent extends Event {
     public processDefinitionsJson: string;
     public calledProcesses: unknown[];
     public calledDecisions: unknown[];
+    public multiInstanceActivities: unknown[];
 
-    public constructor(processDefinitionsJson: string, calledProcesses: unknown[], calledDecisions: unknown[]) {
+    public constructor(processDefinitionsJson: string, calledProcesses: unknown[], calledDecisions: unknown[],
+                       multiInstanceActivities: unknown[]) {
         super(XmlImportCompleteEvent.NAME);
         this.processDefinitionsJson = processDefinitionsJson;
         this.calledProcesses = calledProcesses;
         this.calledDecisions = calledDecisions;
+        this.multiInstanceActivities = multiInstanceActivities;
     }
 }
 
@@ -46,13 +49,16 @@ export class BpmnElementClickEvent extends Event {
     public elementType: string;
     public elementName: string | undefined;
     public isMultiInstance: boolean | undefined;
+    public multiInstanceType: string | undefined;
 
-    public constructor(elementId: string, elementType: string, elementName?: string, isMultiInstance?: boolean) {
+    public constructor(elementId: string, elementType: string, elementName?: string,
+                       isMultiInstance?: boolean, multiInstanceType?: string) {
         super("bpmn-element-clicked");
         this.elementId = elementId;
         this.elementType = elementType;
         this.elementName = elementName;
         this.isMultiInstance = isMultiInstance;
+        this.multiInstanceType = multiInstanceType;
     }
 }
 

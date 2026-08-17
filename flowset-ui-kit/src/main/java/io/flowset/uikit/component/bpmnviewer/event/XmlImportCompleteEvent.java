@@ -12,6 +12,7 @@ import com.vaadin.flow.component.EventData;
 import com.vaadin.flow.internal.JsonUtils;
 import elemental.json.JsonArray;
 import io.flowset.uikit.component.bpmnviewer.BpmnViewer;
+import io.flowset.uikit.component.bpmnviewer.model.ActivityData;
 import io.flowset.uikit.component.bpmnviewer.model.BusinessRuleTaskData;
 import io.flowset.uikit.component.bpmnviewer.model.CallActivityData;
 
@@ -27,6 +28,7 @@ public class XmlImportCompleteEvent extends ComponentEvent<BpmnViewer> {
     protected final String processDefinitionsJson;
     protected final List<CallActivityData> calledProcesses;
     protected final List<BusinessRuleTaskData> calledDecisions;
+    protected final List<ActivityData> multiInstanceActivities;
 
     /**
      * Creates a new event using the given source and indicator whether the
@@ -42,12 +44,15 @@ public class XmlImportCompleteEvent extends ComponentEvent<BpmnViewer> {
     public XmlImportCompleteEvent(BpmnViewer source, boolean fromClient,
                                   @EventData("event.processDefinitionsJson") String processDefinitionsJson,
                                   @EventData("event.calledProcesses") JsonArray calledProcesses,
-                                  @EventData("event.calledDecisions") JsonArray calledDecisions) {
+                                  @EventData("event.calledDecisions") JsonArray calledDecisions,
+                                  @EventData("event.multiInstanceActivities") JsonArray multiInstanceActivities) {
         super(source, fromClient);
         this.processDefinitionsJson = processDefinitionsJson;
         this.calledProcesses = JsonUtils.readValue(calledProcesses, new TypeReference<>() {
         });
         this.calledDecisions = JsonUtils.readValue(calledDecisions, new TypeReference<>() {
+        });
+        this.multiInstanceActivities = JsonUtils.readValue(multiInstanceActivities, new TypeReference<>() {
         });
     }
 
@@ -61,5 +66,9 @@ public class XmlImportCompleteEvent extends ComponentEvent<BpmnViewer> {
 
     public List<BusinessRuleTaskData> getCalledDecisions() {
         return calledDecisions;
+    }
+
+    public List<ActivityData> getMultiInstanceActivities() {
+        return multiInstanceActivities;
     }
 }

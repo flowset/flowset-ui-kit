@@ -4,8 +4,8 @@
  */
 
 import {getBusinessObject} from "bpmn-js/lib/util/ModelUtil";
-import {BusinessRuleTaskData, CallActivityData} from "../types";
-import {getBinding, getCalledElement, getFlowableCalledElementType, getVersion, getVersionTag} from "../utils/callActivityUtils";
+import {ActivityData, BusinessRuleTaskData, CallActivityData} from "../types";
+import {getBinding, getCalledElement, getVersion, getVersionTag} from "../utils/callActivityUtils";
 import {
     getDecisionBinding,
     getDecisionRef,
@@ -15,6 +15,8 @@ import {
     isFlowableDmnTask
 } from "../utils/businessRuleTaskUtils";
 import {ModdleElementsById} from "bpmn-js/lib/BaseViewer";
+import {isMultiInstanceSupported} from "../utils/multiInstanceTaskUtils";
+import {getActivityData} from "../utils/elementMetadataUtils";
 
 export interface CalledReferences {
     processes: CallActivityData[];
@@ -82,5 +84,15 @@ export class BpmnElementDataExtractor {
         }
 
         return {processes: calledProcesses, decisions: calledDecisions};
+    }
+
+    public getMultiInstanceActivities(elementsById: ModdleElementsById): ActivityData [] {
+        return Object.keys(elementsById)
+            .filter(key => isMultiInstanceSupported(elementsById[key]))
+            .map(key => {
+                const diagramElement = elementsById[key];
+                return getActivityData(diagramElement)
+            })
+            .filter(value => value != undefined);
     }
 }

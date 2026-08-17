@@ -53,7 +53,7 @@ import {
 import {findProcessDefinitions} from "./utils/findProcessDefinitions";
 import {BpmnElementDataExtractor} from "./element/BpmnElementDataExtractor";
 import {createContextMenuEventData} from "./contextmenu/createContextMenuEventData";
-import {isMultiInstanceSupported} from "./utils/multiInstanceTaskUtils";
+import {getMultiInstanceType, isMultiInstanceSupported} from "./utils/multiInstanceTaskUtils";
 import {getActivityData} from "./utils/elementMetadataUtils";
 
 @customElement("flowset-bpmn-viewer")
@@ -106,8 +106,9 @@ class FlowsetBpmnViewer extends LitElement {
             this.processDefinitionsJson = JSON.stringify(processDefinitions);
 
             const calledReferences = this.elementDataExtractor.getCalledReferences(e.elementsById, this.engineType);
+            const multiInstanceActivities = this.elementDataExtractor.getMultiInstanceActivities(e.elementsById);
             this.dispatchEvent(new XmlImportCompleteEvent(this.processDefinitionsJson,
-                calledReferences.processes, calledReferences.decisions));
+                calledReferences.processes, calledReferences.decisions, multiInstanceActivities));
 
             this.resetZoom();
         });
@@ -453,7 +454,8 @@ class FlowsetBpmnViewer extends LitElement {
             const elementActive = isElementActive(event.element);
             if (elementActive) {
                 this.dispatchEvent(new BpmnElementClickEvent(event.element.id, event.element.type,
-                    event.element.businessObject?.name, isMultiInstanceSupported(event.element)));
+                    event.element.businessObject?.name, isMultiInstanceSupported(event.element),
+                    getMultiInstanceType(event.element)));
             }
         });
     }
