@@ -3,10 +3,15 @@
  * Use is subject to license terms.
  */
 
+.bpmn-viewer-actions-host {
+    position: relative;
+}
+
 .bpmn-viewer-right-side-actions {
     z-index: 1;
+    top: 0;
     right: 1em;
-    position: fixed;
+    position: absolute;
     margin-top: 0.5em;
     font-size: large;
 
@@ -35,7 +40,9 @@ vaadin-button.bpmn-viewer-action-active {
 
 .bpmn-viewer-left-side-actions {
     z-index: 1;
-    position: fixed;
+    top: 0;
+    left: 0;
+    position: absolute;
     margin-left: 0.5em;
     margin-top: 0.5em;
     font-size: large;
