@@ -77,7 +77,7 @@ public class CallActivityData {
     }
 
     /**
-     * Gets a called element.
+     * Gets a called element: a process definition id if the binding is {@code id}, otherwise a process definition key.
      *
      * @return called element
      */
@@ -104,7 +104,7 @@ public class CallActivityData {
     }
 
     /**
-     * Gets a binding.
+     * Gets a binding, e.g. {@code latest}, {@code deployment}, {@code version}, {@code versionTag} or {@code id}.
      *
      * @return call activity binding type
      */

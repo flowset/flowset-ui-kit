@@ -4,6 +4,7 @@
  */
 
 import {ElementLike} from "diagram-js/lib/model/Types";
+import {EngineType} from "../types";
 
 export enum OverlayType {
     DOCUMENTATION = 'documentation',
@@ -52,6 +53,7 @@ export interface DecisionInstanceLinkOverlayData {
 export interface DecisionInstanceLinkOverlayParams {
     data: DecisionInstanceLinkOverlayData;
     handleClick: (decisionInstanceId: string) => void;
+    engineType?: EngineType;
 }
 
 export interface NewActivityStatisticsOverlayData {
@@ -138,5 +140,6 @@ export interface CalledProcessOverlaysParams {
 export interface DecisionLinkOverlaysParams {
     data: DecisionLinkOverlaysData;
     handleClick: (element: any, businessRuleTaskData: JSON) => void;
+    engineType?: EngineType;
 }
 

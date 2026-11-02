@@ -28,7 +28,8 @@ BpmRenderer.$inject = ['eventBus', 'bpmnRenderer', 'pathMap'];
 BpmRenderer.prototype.canRender = function (element) {
     const elementType = element.businessObject.type || element.businessObject.get('flowable:type');
     return isAny(element, ['bpmn:ServiceTask'])
-        && ['dmn', 'jmix-send-email', 'jmix-load-entities-jpql', 'jmix-modify-entity', 'jmix-create-entity'].includes(elementType);
+        && ['dmn', 'jmix-send-email', 'jmix-send-notification', 'jmix-load-entities-jpql', 'jmix-modify-entity',
+            'jmix-create-entity'].includes(elementType);
 };
 
 BpmRenderer.prototype.drawShape = function (parentNode, element, attrs = {}) {
@@ -37,6 +38,8 @@ BpmRenderer.prototype.drawShape = function (parentNode, element, attrs = {}) {
         return _drawEntityDataTask.bind(this)(parentNode, element, attrs);
     } else if (elementType === 'jmix-send-email') {
         return this.bpmnRenderer.handlers['bpmn:SendTask'](parentNode, element, attrs);
+    } else if (elementType === 'jmix-send-notification') {
+        return _drawSendNotificationTask.bind(this)(parentNode, element, attrs);
     } else {
         return this.bpmnRenderer.handlers['bpmn:BusinessRuleTask'](parentNode, element, attrs);
     }
@@ -61,6 +64,22 @@ function _drawEntityDataTask(parentGfx, element, attrs = {}) {
     });
 
     this.bpmnRenderer._drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: 'white',
+        fillOpacity: .95,
+        stroke: 'black'
+    });
+
+    return rect;
+}
+
+function _drawSendNotificationTask(parentGfx, element, attrs = {}) {
+    const rect = this.bpmnRenderer.handlers['bpmn:Task'](parentGfx, element, attrs);
+
+    const bellPath = 'M 14 6.5 c -3.2 0 -5.2 2.3 -5.2 5.5 l 0 3.6 l -1.6 2.2 l 13.6 0 l -1.6 -2.2 l 0 -3.6 ' +
+        'c 0 -3.2 -2 -5.5 -5.2 -5.5 z M 12.2 19.4 a 1.8 1.8 0 0 0 3.6 0';
+
+    this.bpmnRenderer._drawPath(parentGfx, bellPath, {
         strokeWidth: 1,
         fill: 'white',
         fillOpacity: .95,

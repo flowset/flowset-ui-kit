@@ -64,6 +64,7 @@ public class BpmnViewerFragment extends Fragment<Div> {
     protected boolean showNotPassedAsDisabled;
     protected ViewerMode mode;
     protected InteractiveModeOptions interactiveModeOptions;
+    protected String engineType;
     protected BpmnViewer bpmnViewer;
 
     @Subscribe(target = Target.HOST_CONTROLLER)
@@ -173,6 +174,24 @@ public class BpmnViewerFragment extends Fragment<Div> {
     }
 
     /**
+     * Sets the engine type of the parent process. Forwarded to {@link BpmnViewer#setEngineType(String)} when the
+     * viewer is initialized.
+     *
+     * @param engineType name of the engine type, e.g. {@code CAMUNDA_7}
+     */
+    public void setEngineType(@Nullable String engineType) {
+        this.engineType = engineType;
+        if (bpmnViewer != null) {
+            bpmnViewer.setEngineType(engineType);
+        }
+    }
+
+    @Nullable
+    public String getEngineType() {
+        return engineType;
+    }
+
+    /**
      * Sets whether the elements the process token has not reached are shown as disabled.
      *
      * @param showAsDisabled whether the not passed elements are shown as disabled
@@ -192,6 +211,7 @@ public class BpmnViewerFragment extends Fragment<Div> {
      */
     public void initViewer(String bpmnXml) {
         this.bpmnViewer = createBpmnViewer();
+        this.bpmnViewer.setEngineType(engineType);
         this.bpmnViewer.setBpmnXml(bpmnXml);
         if (mode == ViewerMode.INTERACTIVE && interactiveModeOptions != null) {
             this.bpmnViewer.setInteractiveMode(interactiveModeOptions);

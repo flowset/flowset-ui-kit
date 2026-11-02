@@ -25,6 +25,7 @@ import tools.jackson.databind.json.JsonMapper;
  */
 @Tag("flowset-control-dmn-viewer")
 @NpmPackage(value = "dmn-js", version = "17.10.1")
+@NpmPackage(value = "@bpmn-io/dmn-migrate", version = "0.7.1")
 @CssImport("dmn-js/dist/assets/dmn-font/css/dmn-embedded.css")
 @JsModule("./src/dmn-viewer/dmn-viewer.ts")
 public class DmnViewer extends Component {
