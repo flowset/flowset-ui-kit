@@ -46,7 +46,7 @@ const isAsyncAfter = bo => {
     if (camundaAsyncAfter) {
         return true;
     }
-    return !!bo.get('operaton:asyncAfter');
+    return !!(bo.get('operaton:asyncAfter') || bo.get('flowable:asyncLeave'));
 };
 
 const isAsyncBefore = bo => {
@@ -55,7 +55,7 @@ const isAsyncBefore = bo => {
         return true;
     }
 
-    return !!(bo.get('operaton:asyncBefore') || bo.get('operaton:async'));
+    return !!(bo.get('operaton:asyncBefore') || bo.get('operaton:async') || bo.get('flowable:async'));
 };
 
 
@@ -106,8 +106,10 @@ const isWaitStateTask = (element) => {
 const hasExternalImplementation = businessObject => {
     const camundaTaskType = businessObject.get('camunda:type');
     const operatonTaskType = businessObject.get('operaton:type');
+    const flowableTaskType = businessObject.get('flowable:type');
 
-    return camundaTaskType === 'external' || operatonTaskType === 'external';
+    return camundaTaskType === 'external' || operatonTaskType === 'external'
+        || flowableTaskType === 'external-worker';
 }
 
 const isWaitStateGateway = (element) => {

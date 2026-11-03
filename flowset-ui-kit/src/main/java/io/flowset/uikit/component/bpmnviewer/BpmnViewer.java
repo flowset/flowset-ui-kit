@@ -254,6 +254,15 @@ public class BpmnViewer extends Component implements HasElement, ApplicationCont
     }
 
     /**
+     * Sets the engine type of the process . Must be set before the BPMN XML.
+     *
+     * @param engineType name of the engine type, e.g. {@code CAMUNDA_7}
+     */
+    public void setEngineType(@Nullable String engineType) {
+        getElement().callJsFunction("setEngineType", engineType);
+    }
+
+    /**
      * Switches the viewer to the {@link ViewerMode#INTERACTIVE} mode configured by the provided options.
      *
      * @param options interactive mode options; options that are not set are reset to their defaults

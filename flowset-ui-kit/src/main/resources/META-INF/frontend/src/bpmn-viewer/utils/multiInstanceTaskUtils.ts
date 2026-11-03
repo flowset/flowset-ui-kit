@@ -10,6 +10,19 @@ export const isMultiInstanceSupported = (element: ElementLike): boolean => {
     return !!loopCharacteristics && is(loopCharacteristics, 'bpmn:MultiInstanceLoopCharacteristics');
 }
 
+/**
+ * Gets the multi-instance type of a BPMN element.
+ * @param element element metadata
+ * @return 'sequential' or 'parallel', undefined if the element is not multi-instance
+ */
+export const getMultiInstanceType = (element: ElementLike): string | undefined => {
+    if (!isMultiInstanceSupported(element)) {
+        return undefined;
+    }
+    const sequential = getLoopCharacteristics(element).get('isSequential');
+    return sequential === true || sequential === 'true' ? 'sequential' : 'parallel';
+}
+
 function getLoopCharacteristics(element) {
     const bo = getBusinessObject(element);
     return bo.loopCharacteristics;

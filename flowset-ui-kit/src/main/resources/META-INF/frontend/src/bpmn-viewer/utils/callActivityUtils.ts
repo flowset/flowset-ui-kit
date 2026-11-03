@@ -13,8 +13,15 @@ export const getBinding = (element: any): string | undefined => {
     const businessObject = element.businessObject || element;
     const camundaBinding = businessObject.get('camunda:calledElementBinding');
     const operatonBinding = businessObject.get('operaton:calledElementBinding');
+    if (camundaBinding || operatonBinding) {
+        return camundaBinding || operatonBinding;
+    }
 
-    return camundaBinding || operatonBinding;
+    const flowableSameDeployment = businessObject.get('flowable:sameDeployment');
+    if (flowableSameDeployment === true || flowableSameDeployment === 'true') {
+        return 'deployment';
+    }
+    return businessObject.get('flowable:calledElementType') === 'id' ? 'id' : undefined;
 }
 
 export const getVersion = (element: any): string | undefined => {

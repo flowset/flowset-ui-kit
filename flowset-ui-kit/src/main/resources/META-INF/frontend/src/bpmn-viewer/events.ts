@@ -46,13 +46,16 @@ export class BpmnElementClickEvent extends Event {
     public elementType: string;
     public elementName: string | undefined;
     public isMultiInstance: boolean | undefined;
+    public multiInstanceType: string | undefined;
 
-    public constructor(elementId: string, elementType: string, elementName?: string, isMultiInstance?: boolean) {
+    public constructor(elementId: string, elementType: string, elementName?: string,
+                       isMultiInstance?: boolean, multiInstanceType?: string) {
         super("bpmn-element-clicked");
         this.elementId = elementId;
         this.elementType = elementType;
         this.elementName = elementName;
         this.isMultiInstance = isMultiInstance;
+        this.multiInstanceType = multiInstanceType;
     }
 }
 

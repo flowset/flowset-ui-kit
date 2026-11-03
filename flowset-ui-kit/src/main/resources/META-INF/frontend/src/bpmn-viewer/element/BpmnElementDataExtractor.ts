@@ -4,13 +4,14 @@
  */
 
 import {getBusinessObject} from "bpmn-js/lib/util/ModelUtil";
-import {BusinessRuleTaskData, CallActivityData} from "../types";
+import {BusinessRuleTaskData, CallActivityData, EngineType} from "../types";
 import {getBinding, getCalledElement, getVersion, getVersionTag} from "../utils/callActivityUtils";
 import {
     getDecisionBinding,
     getDecisionRef,
     getDecisionVersion,
-    getDecisionVersionTag
+    getDecisionVersionTag,
+    isDecisionTask
 } from "../utils/businessRuleTaskUtils";
 import {ModdleElementsById} from "bpmn-js/lib/BaseViewer";
 
@@ -22,10 +23,11 @@ export interface CalledReferences {
 export class BpmnElementDataExtractor {
 
     /**
-     * Extracts called processes and decision tables from the Call Activity and Business Rule Tasks from the provided elements.
+     * Extracts called processes and decision tables from the Call Activity and decision task elements.
      * @param elementsById diagram elements from the imported BPMN 2.0 XML
+     * @param engineType engine type of the parent process
      */
-    public getCalledReferences(elementsById: ModdleElementsById): CalledReferences {
+    public getCalledReferences(elementsById: ModdleElementsById, engineType?: EngineType): CalledReferences {
         const calledProcesses: CallActivityData[] = [];
         const calledDecisions: BusinessRuleTaskData[] = [];
 
@@ -47,7 +49,7 @@ export class BpmnElementDataExtractor {
                     versionTag: getVersionTag(element),
                     binding: getBinding(element)
                 });
-            } else if (type == 'bpmn:BusinessRuleTask') {
+            } else if (isDecisionTask(element, engineType)) {
                 const decisionRef = getDecisionRef(element);
                 if (!decisionRef) {
                     continue;

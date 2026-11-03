@@ -98,6 +98,20 @@ export enum ViewerMode {
     Interactive = 'INTERACTIVE'
 }
 
+// Names of the EngineFamily and EngineType Java enums of Flowset Control, community and enterprise
+export enum EngineFamily {
+    Camunda7 = 'CAMUNDA_7',
+    Flowable8 = 'FLOWABLE_8'
+}
+
+export enum EngineType {
+    Camunda7 = 'CAMUNDA_7',
+    Operaton = 'OPERATON',
+    Fluxnova = 'FLUXNOVA',
+    CibSeven = 'CIB_SEVEN',
+    JmixBpm3 = 'JMIX_BPM_3'
+}
+
 export interface ActivityData {
     id: string;
     name?: string;

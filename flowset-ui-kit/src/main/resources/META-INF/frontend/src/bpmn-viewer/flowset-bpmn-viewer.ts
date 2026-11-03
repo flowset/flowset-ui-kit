@@ -14,6 +14,7 @@ import {
     AddMarkerCmd,
     AutoZoomDirection,
     BpmProcessDefinition,
+    EngineType,
     PassedFlowsCmd,
     SetInteractiveModeCmd,
     RemoveMarkerCmd,
@@ -57,7 +58,7 @@ import {
 import {findProcessDefinitions} from "./utils/findProcessDefinitions";
 import {BpmnElementDataExtractor} from "./element/BpmnElementDataExtractor";
 import {createContextMenuEventData} from "./contextmenu/createContextMenuEventData";
-import {isMultiInstanceSupported} from "./utils/multiInstanceTaskUtils";
+import {getMultiInstanceType, isMultiInstanceSupported} from "./utils/multiInstanceTaskUtils";
 import {getActivityData} from "./utils/elementMetadataUtils";
 import {MarkerManager} from "./marker/MarkerManager";
 
@@ -87,6 +88,7 @@ class FlowsetBpmnViewer extends LitElement {
     private processDefinitionsJson: string = "[]";
 
     private mode: string;
+    private engineType?: EngineType;
     private activeElements?: string[];
     private disabledElements?: string[];
     private showNotPassedAsDisabled: boolean = false;
@@ -117,7 +119,7 @@ class FlowsetBpmnViewer extends LitElement {
             const processDefinitions: BpmProcessDefinition[] = findProcessDefinitions(e);
             this.processDefinitionsJson = JSON.stringify(processDefinitions);
 
-            const calledReferences = this.elementDataExtractor.getCalledReferences(e.elementsById);
+            const calledReferences = this.elementDataExtractor.getCalledReferences(e.elementsById, this.engineType);
             this.dispatchEvent(new XmlImportCompleteEvent(this.processDefinitionsJson,
                 calledReferences.processes, calledReferences.decisions));
 
@@ -176,7 +178,11 @@ class FlowsetBpmnViewer extends LitElement {
             const handleOverlayClick = (decisionInstanceId: string) => {
                 this.dispatchEvent(new DecisionInstanceLinkOverlayClickedEvent(decisionInstanceId));
             };
-            this.overlayManager.showDecisionInstanceLinkOverlay({data: cmd, handleClick: handleOverlayClick})
+            this.overlayManager.showDecisionInstanceLinkOverlay({
+                data: cmd,
+                handleClick: handleOverlayClick,
+                engineType: this.engineType
+            });
         });
     }
 
@@ -227,7 +233,11 @@ class FlowsetBpmnViewer extends LitElement {
             const handleOverlayClick = (element: ElementLike, businessRuleTaskData: JSON) => {
                 this.dispatchEvent(new DecisionLinkOverlayClickEvent(element.id, businessRuleTaskData));
             }
-            this.overlayManager.showDecisionLinkOverlays({data: cmd, handleClick: handleOverlayClick});
+            this.overlayManager.showDecisionLinkOverlays({
+                data: cmd,
+                handleClick: handleOverlayClick,
+                engineType: this.engineType
+            });
         });
     }
 
@@ -392,6 +402,10 @@ class FlowsetBpmnViewer extends LitElement {
         this.canvas.getContainer().classList.toggle("bpmn-not-passed-as-disabled", active);
     }
 
+    public setEngineType(engineType?: string) {
+        this.engineType = engineType ? engineType as EngineType : undefined;
+    }
+
     public setActiveElements(activeElements?: string) {
         this.activeElements = activeElements ? JSON.parse(activeElements) as string[] : undefined;
     }
@@ -527,7 +541,8 @@ class FlowsetBpmnViewer extends LitElement {
             const elementActive = isElementActive(event.element);
             if (elementActive) {
                 this.dispatchEvent(new BpmnElementClickEvent(event.element.id, event.element.type,
-                    event.element.businessObject?.name, isMultiInstanceSupported(event.element)));
+                    event.element.businessObject?.name, isMultiInstanceSupported(event.element),
+                    getMultiInstanceType(event.element)));
             }
         });
     }

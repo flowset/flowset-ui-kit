@@ -9,6 +9,7 @@ import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.DomEvent;
 import com.vaadin.flow.component.EventData;
 import io.flowset.uikit.component.bpmnviewer.BpmnViewer;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Event that is fired if the element is clicked on the {@link BpmnViewer}.
@@ -24,29 +25,33 @@ public class ElementClickEvent extends ComponentEvent<BpmnViewer> {
     protected String elementType;
     protected String elementName;
     protected boolean isMultiInstance;
+    protected String multiInstanceType;
 
     /**
      * Creates a new event using the given source and indicator whether the
      * event originated from the client side or the server side.
      *
-     * @param source          the source component
-     * @param fromClient      <code>true</code> if the event originated from the client
-     *                        side, <code>false</code> otherwise
-     * @param elementId       clicked element identifier
-     * @param elementType     clicked element type
-     * @param elementName     clicked element name
-     * @param isMultiInstance whether the clicked element is a multi-instance activity
+     * @param source            the source component
+     * @param fromClient        <code>true</code> if the event originated from the client
+     *                          side, <code>false</code> otherwise
+     * @param elementId         clicked element identifier
+     * @param elementType       clicked element type
+     * @param elementName       clicked element name
+     * @param isMultiInstance   whether the clicked element is a multi-instance activity
+     * @param multiInstanceType {@code sequential} or {@code parallel} for a multi-instance activity
      */
     public ElementClickEvent(BpmnViewer source, boolean fromClient,
                              @EventData("event.elementId") String elementId,
                              @EventData("event.elementType") String elementType,
                              @EventData("event.elementName") String elementName,
-                             @EventData("event.isMultiInstance") boolean isMultiInstance) {
+                             @EventData("event.isMultiInstance") boolean isMultiInstance,
+                             @EventData("event.multiInstanceType") @Nullable String multiInstanceType) {
         super(source, fromClient);
         this.elementId = elementId;
         this.elementType = elementType;
         this.elementName = elementName;
         this.isMultiInstance = isMultiInstance;
+        this.multiInstanceType = multiInstanceType;
     }
 
     /**
@@ -121,6 +126,25 @@ public class ElementClickEvent extends ComponentEvent<BpmnViewer> {
      */
     public void setMultiInstance(boolean isMultiInstance) {
         this.isMultiInstance = isMultiInstance;
+    }
+
+    /**
+     * Gets the multi-instance type of the clicked element.
+     *
+     * @return {@code sequential} or {@code parallel}, {@code null} if the element is not a multi-instance activity
+     */
+    @Nullable
+    public String getMultiInstanceType() {
+        return multiInstanceType;
+    }
+
+    /**
+     * Sets the multi-instance type of the clicked element.
+     *
+     * @param multiInstanceType {@code sequential}, {@code parallel} or {@code null}
+     */
+    public void setMultiInstanceType(@Nullable String multiInstanceType) {
+        this.multiInstanceType = multiInstanceType;
     }
 
 }

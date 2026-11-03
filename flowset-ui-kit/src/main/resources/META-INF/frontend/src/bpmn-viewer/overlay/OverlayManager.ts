@@ -43,7 +43,8 @@ import {
     getDecisionBinding,
     getDecisionRef,
     getDecisionVersion,
-    getDecisionVersionTag
+    getDecisionVersionTag,
+    isDecisionTask
 } from "../utils/businessRuleTaskUtils";
 import {createVariableChangeOverlay} from "./createVariableChangeOverlay";
 
@@ -128,9 +129,9 @@ export class OverlayManager {
      * @param data overlay data
      * @param handleClick overlay click handler
      */
-    public showDecisionInstanceLinkOverlay({data, handleClick}: DecisionInstanceLinkOverlayParams) {
+    public showDecisionInstanceLinkOverlay({data, handleClick, engineType}: DecisionInstanceLinkOverlayParams) {
         const element = this.elementRegistry.find((element) => {
-            return element.type == "bpmn:BusinessRuleTask" && element.id == data.activityId
+            return element.id == data.activityId && isDecisionTask(element, engineType);
         });
 
         if (element) {
@@ -237,11 +238,11 @@ export class OverlayManager {
         }
     }
 
-    public showDecisionLinkOverlays({data, handleClick}: DecisionLinkOverlaysParams) {
+    public showDecisionLinkOverlays({data, handleClick, engineType}: DecisionLinkOverlaysParams) {
         this.overlays.remove({type: OverlayType.DECISION});
 
         if (data.visible) {
-            const elements: ElementLike[] = this.elementRegistry.filter(element => element.type == "bpmn:BusinessRuleTask");
+            const elements: ElementLike[] = this.elementRegistry.filter(element => isDecisionTask(element, engineType));
             elements.forEach((element: ElementLike) => {
                 const decisionRef = getDecisionRef(element);
                 if (decisionRef && decisionRef.length > 0) {
